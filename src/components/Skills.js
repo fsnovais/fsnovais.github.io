@@ -13,6 +13,7 @@ import jenkins from "../assets/img/Jenkins.svg"
 import python from "../assets/img/python.svg"
 import bigquery from "../assets/img/bigquery.svg"
 import sql from "../assets/img/sql.svg"
+import salesforce from "../assets/img/salesforce.svg"
 
 
 function Skills () {
@@ -45,7 +46,7 @@ function Skills () {
                             <h2>
                                 Skills
                             </h2>
-                            <p>I have a strong background in dbt, Snowflake, and BigQuery, specializing in ELT processes across various projects. Also I have experience with React for creating dynamic user interfaces and utilize HTML, CSS, and JavaScript to develop responsive web applications. Additionally, I leverage AWS for cloud solutions, with hands-on experience in S3, Lambda functions, and custom API data ingestion.</p>
+                            <p>I've got solid experience working with dbt, Snowflake, and BigQuery, focusing on ELT processes across different projects. On the front-end side, I use React to build dynamic user interfaces, and I’m comfortable with HTML, CSS, and JavaScript for developing responsive web apps. I’ve also worked with Salesforce, creating custom platforms based on business needs, handling both the backend and frontend using Apex, Visualforce, and Lightning. Plus, I’ve got hands-on experience with AWS, working with S3, Lambda functions, and building custom API integrations for data ingestion.</p>
                             <Carousel responsive={responsive} infinite={true} className='skill-slider'>
                                 <div className='item'>
                                     <img src={snowflake} alt="Image"/>
@@ -82,6 +83,10 @@ function Skills () {
                                 <div className='item'>
                                     <img src={sql} alt="Image"/>
                                         <h5>SQL</h5>
+                                </div>
+                                <div className='item'>
+                                    <img src={salesforce} alt="Image"/>
+                                        <h5>Salesforce</h5>
                                 </div>
                             </Carousel>
                         </div>

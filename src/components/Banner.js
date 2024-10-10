@@ -8,7 +8,7 @@ import bannerImg from '../assets/img/banner.png';
 function Banner () {
     const [loopNum, setLoopNum] = useState(0);
     const [isDeleting, setIsDeleting] = useState(false);
-    const toRotate = ['Web Developer', 'Data Engineer'];
+    const toRotate = ['Software Developer','Data Engineer'];
     const [text, setText] = useState('');
     const [delta, setDelta] = useState(300 - Math.random() * 100);
     const typingSpeed = 200;
@@ -62,8 +62,10 @@ function Banner () {
                     <TrackVisibility>
                     {({ isVisible }) => 
                         <div className={isVisible ? "animate__animated animate_fadeIn" : ""}>
-                            <span className="tagline">Welcome to my Portfolio</span>
-                            <h1>{`Hi I'm Felipe Novais `}<span className="wrap">{text}</span></h1>
+                            <div className="banner-title">
+                                <span className="tagline">Welcome to my Portfolio</span>
+                                <h1>{`Hi I'm Felipe Novais `}<span className="wrap">{text}</span></h1>
+                            </div>
                             <p> A computer science graduate and developer. I love learning new things and strive to improve at least a little bit every day. If you improve by 1% each day, you'll be 365% better by the end of the year. I enjoy solving problems, simplifying things, and enhancing everything I see that isn't good enough.</p>
                             <button onClick={scrollToContact}>Let's connect <ArrowRightCircle size={24}/></button>
                         </div>}
