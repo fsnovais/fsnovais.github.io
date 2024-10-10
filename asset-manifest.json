@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.261e4e65.css",
-    "main.js": "/static/js/main.57fd18d5.js",
+    "main.css": "/static/css/main.cb518a4e.css",
+    "main.js": "/static/js/main.97101c63.js",
     "static/js/453.ace21015.chunk.js": "/static/js/453.ace21015.chunk.js",
     "static/media/project-2.gif": "/static/media/project-2.b237678fa77bba08357c.gif",
     "static/media/color-sharp.png": "/static/media/color-sharp.bea361cfef80fefc2d1e.png",
@@ -23,6 +23,7 @@
     "static/media/Jenkins.svg": "/static/media/Jenkins.43589a6f71d002f6c62b97230e4514e7.svg",
     "static/media/revicons.eot": "/static/media/revicons.a77de540a38981833f9e.eot",
     "static/media/revicons.ttf": "/static/media/revicons.57fd05d4ae650374c8de.ttf",
+    "static/media/salesforce.svg": "/static/media/salesforce.445c0629ad560febf4d5e498d27d558c.svg",
     "static/media/revicons.woff": "/static/media/revicons.e8746a624ed098489406.woff",
     "static/media/snowflake.svg": "/static/media/snowflake.624f3e6bb95a3c09525434d2792dd47c.svg",
     "static/media/AWS.svg": "/static/media/AWS.cc38dbe9487d55943d42132de41bbf53.svg",
@@ -35,12 +36,12 @@
     "static/media/bigquery.svg": "/static/media/bigquery.e0fe1a997cb920ff3e72649ad1267193.svg",
     "static/media/nav-icon1.svg": "/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
     "index.html": "/index.html",
-    "main.261e4e65.css.map": "/static/css/main.261e4e65.css.map",
-    "main.57fd18d5.js.map": "/static/js/main.57fd18d5.js.map",
+    "main.cb518a4e.css.map": "/static/css/main.cb518a4e.css.map",
+    "main.97101c63.js.map": "/static/js/main.97101c63.js.map",
     "453.ace21015.chunk.js.map": "/static/js/453.ace21015.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.261e4e65.css",
-    "static/js/main.57fd18d5.js"
+    "static/css/main.cb518a4e.css",
+    "static/js/main.97101c63.js"
   ]
 }
