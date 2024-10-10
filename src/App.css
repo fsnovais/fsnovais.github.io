@@ -283,11 +283,16 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 }
 
 .banner-title {
-  height: 25vh;
+  height: 30vh;
   
 }
 
 @media (max-width: 768px) {
+
+.banner-title {
+  height: 25vh;
+  
+}
   .banner-title h1 {
     font-size: 40px;
   }
