@@ -298,13 +298,12 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
     flex-direction: column-reverse;
   }
   .banner-title {
-    height: 30vh;
     display:flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
   }
-  
+
   .banner-title h1 {
     height: 15vh;
     font-size: 40px;
