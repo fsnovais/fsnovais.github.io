@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { ArrowRightCircle } from "react-bootstrap-icons";
 import TrackVisibility from "react-on-screen";
 import 'animate.css';
-import bannerImg from '../assets/img/banner.png';
+import bannerImg from '../assets/img/banner_img.png';
 
 function Banner () {
     const [loopNum, setLoopNum] = useState(0);
@@ -57,7 +57,7 @@ function Banner () {
     return (
         <section className="banner" id ='home'>
             <Container>
-                <Row className="align-items-center">
+                <Row className="align-items-center row-reverse-mobile">
                     <Col xs = {12} md = {6} xl={7}>
                     <TrackVisibility>
                     {({ isVisible }) => 
@@ -71,7 +71,7 @@ function Banner () {
                         </div>}
                     </TrackVisibility>
                     </Col>
-                    <Col xs = {12} md = {6} xl={5}>
+                    <Col xs = {12} md = {6} xl={4}>
                         <img src={bannerImg} alt="Headder Img"></img>
                     </Col>
                 </Row>

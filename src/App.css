@@ -89,10 +89,11 @@ nav.navbar {
   top: 0;
   z-index: 9999;
   transition:  0.32s ease-in-out;
+  background-color: #121212; 
 }
 nav.navbar.scrolled {
   padding: 0px 0;
-  background-color: #121212;
+  
 }
 nav.navbar a.navbar-brand {
     width: 9%;
@@ -283,15 +284,33 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 }
 
 .banner-title {
-  height: 25vh;
+  height: 30vh;
+
+}
+
+.banner img {
+  border-radius: 50%;
   
 }
 
 @media (max-width: 768px) {
+  .row-reverse-mobile {
+    flex-direction: column-reverse;
+  }
+  .banner-title {
+    height: 30vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  
   .banner-title h1 {
+    height: 15vh;
     font-size: 40px;
   }
 }
+
 
 @keyframes updown {
     0% {
