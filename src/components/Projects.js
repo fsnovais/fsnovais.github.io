@@ -14,8 +14,6 @@ import project9 from "../assets/img/project-9.jpg"
 import project10 from "../assets/img/project-10.jpg"
 import dbtproject from "../assets/img/dbt-project.jpg"
 import googleads from "../assets/img/google-ads.png"
-import captivate from "../assets/img/captivate.jpeg"
-import sharepoint from "../assets/img/sharepoint.jpg"
 
 function Projects () {
 
@@ -24,18 +22,7 @@ function Projects () {
       description: "Python",
       imgUrl: googleads,
       url: 'https://github.com/fsnovais/public_files/blob/main/handler.py'
-    },
-    {title: "Captivate API Custom Snowflake Connector",
-      description: "Python",
-      imgUrl: captivate,
-      url: 'https://github.com/fsnovais/captivate-snowflake-connector'
-
-    },
-    {title: "Sharepoint Snowflake Connector",
-      description: "Python",
-      imgUrl: sharepoint,
-      url: 'https://github.com/fsnovais/sharepoint-snowflake-connector'
-    },
+    }
   ]
   const frontend = [
     {
