@@ -45,6 +45,23 @@ export async function listarComTraducao(secao, lang) {
   return itens.sort((a, b) => b.post.data.date.getTime() - a.post.data.date.getTime());
 }
 
+/**
+ * blog + devlog combinados, no idioma pedido, com o texto do outro idioma
+ * quando ainda não existe tradução. Fonte única para a busca: se um item
+ * aparece aqui, ele existe de fato numa URL navegável.
+ */
+export async function listarBuscaveis(lang) {
+  const [blog, devlog] = await Promise.all([
+    listarComTraducao('blog', lang),
+    listarComTraducao('devlog', lang),
+  ]);
+
+  return [
+    ...blog.map((i) => ({ ...i, secao: 'blog' })),
+    ...devlog.map((i) => ({ ...i, secao: 'devlog' })),
+  ].sort((a, b) => b.post.data.date.getTime() - a.post.data.date.getTime());
+}
+
 /** Existe versão deste post no idioma pedido? */
 export async function temTraducao(secao, lang, id) {
   const posts = await listarPosts(secao, lang);

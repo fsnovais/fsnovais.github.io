@@ -2,6 +2,7 @@
 import { site } from '../data/site.js';
 import ThemeToggle from './ThemeToggle.astro';
 import LangToggle from './LangToggle.astro';
+import Search from './Search.astro';
 import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
 import { rota } from '../i18n/routes.js';
 
@@ -56,6 +57,7 @@ const { langAlternate } = Astro.props;
     </nav>
 
     <div class="nav-controls">
+      <Search />
       <LangToggle destinoAlternativo={langAlternate} />
       <ThemeToggle />
     </div>

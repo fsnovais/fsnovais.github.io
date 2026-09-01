@@ -38,6 +38,13 @@ export const ui = {
     'toggle.langGroup': 'Language',
     'toggle.langCurrent': 'current language',
 
+    // busca
+    'search.buttonAria': 'Search posts',
+    'search.placeholder': 'Search posts…',
+    'search.hint': 'Type to search, ↑↓ to move, ↵ to open, esc to close',
+    'search.empty': 'No results for “{query}”',
+    'search.close': 'Close search',
+
     // meta do site
     'site.role': 'Senior Data Engineer',
     'site.tagline': 'Technology and finance',
@@ -57,6 +64,8 @@ export const ui = {
     'home.aboutCard': 'How I work, the stack I use and how to reach me.',
     'home.contactCard': 'Open to data engineering roles, and to talking about anything on this site. I reply within two business days.',
     'home.contactLabel': 'Contact',
+    'home.whoami.lines':
+      'data engineer during business hours|writing about data, AI and money|strong coffee, stronger queries|always testing a new idea',
 
     // projetos
     'projects.eyebrow': 'Projects',
@@ -149,6 +158,13 @@ export const ui = {
     'toggle.langGroup': 'Idioma',
     'toggle.langCurrent': 'idioma atual',
 
+    // busca
+    'search.buttonAria': 'Buscar posts',
+    'search.placeholder': 'Buscar posts…',
+    'search.hint': 'Digite para buscar, ↑↓ para navegar, ↵ para abrir, esc para fechar',
+    'search.empty': 'Nenhum resultado para “{query}”',
+    'search.close': 'Fechar busca',
+
     'site.role': 'Engenheiro de Dados Sênior',
     'site.tagline': 'Tecnologia e finanças',
     'site.title': 'Felipe.log, tecnologia e finanças',
@@ -168,6 +184,8 @@ export const ui = {
     'home.contactCard':
       'Aberto a oportunidades em engenharia de dados e a conversar sobre qualquer assunto daqui. Respondo em até dois dias úteis.',
     'home.contactLabel': 'Contato',
+    'home.whoami.lines':
+      'engenheiro de dados nas horas úteis|escrevendo sobre tecnologia, IA e dinheiro|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
 
     'projects.eyebrow': 'Projetos',
     'projects.title': 'O que eu construí',

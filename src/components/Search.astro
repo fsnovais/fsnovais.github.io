@@ -1,0 +1,436 @@
+---
+import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// mesmo arquivo gerado por src/pages/search.json.js (pt) e src/pages/en/search.json.js
+const indexUrl = localizedPath(lang, '/search.json');
+
+const strings = {
+  empty: t('search.empty'),
+  sectionBlog: t('posts.section.blog'),
+  sectionDevlog: t('posts.section.devlog'),
+  onlyPt: t('posts.onlyPortuguese'),
+  onlyEn: t('posts.onlyEnglish'),
+};
+---
+
+<button
+  type="button"
+  class="search-trigger"
+  data-search-open
+  aria-haspopup="dialog"
+  title={t('search.buttonAria')}
+>
+  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="10.5" cy="10.5" r="6.5"></circle>
+    <path d="M20 20l-4.6-4.6"></path>
+  </svg>
+  <span class="visually-hidden">{t('search.buttonAria')}</span>
+</button>
+
+<dialog class="search-dialog" data-search-dialog aria-label={t('search.buttonAria')}>
+  <div class="search-box">
+    <svg class="ico search-box-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="10.5" cy="10.5" r="6.5"></circle>
+      <path d="M20 20l-4.6-4.6"></path>
+    </svg>
+    <input
+      type="search"
+      data-search-input
+      placeholder={t('search.placeholder')}
+      aria-label={t('search.placeholder')}
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+    />
+    <button type="button" class="search-close" data-search-close>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M5 5l14 14M19 5L5 19"></path>
+      </svg>
+      <span class="visually-hidden">{t('search.close')}</span>
+    </button>
+  </div>
+
+  <p class="search-hint" data-search-hint>{t('search.hint')}</p>
+  <p class="search-empty" data-search-empty hidden></p>
+  <ul class="search-results" data-search-results></ul>
+</dialog>
+
+<style>
+  .search-trigger {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .search-trigger:hover {
+    color: var(--accent);
+    border-color: var(--border-strong);
+  }
+
+  .ico {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* o <dialog> cuida do overlay e do foco; só o miolo é estilizado aqui */
+  .search-dialog {
+    margin: 10vh auto auto;
+    padding: 0;
+    width: min(92vw, 38rem);
+    max-height: 74vh;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .search-dialog:not([open]) {
+    display: none;
+  }
+
+  .search-dialog::backdrop {
+    background: color-mix(in srgb, var(--bg) 65%, transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-box-ico {
+    flex: none;
+    color: var(--text-faint);
+  }
+
+  .search-box input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: var(--step-1);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-faint);
+  }
+
+  .search-box input:focus {
+    outline: none;
+  }
+
+  .search-box input::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  .search-close {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-faint);
+    cursor: pointer;
+  }
+
+  .search-close:hover {
+    color: var(--accent);
+  }
+
+  .search-hint {
+    padding: var(--space-4);
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .search-empty {
+    padding: var(--space-4);
+    color: var(--text-muted);
+  }
+
+  .search-results {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-2);
+    overflow-y: auto;
+  }
+
+  /* conteúdo montado por JS a partir do índice: precisa de seletor global,
+     o escopo automático do Astro não alcança nós criados fora do template */
+  .search-results :global(li + li) {
+    border-top: 1px solid var(--border);
+  }
+
+  .search-results :global(a) {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-3);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .search-results :global(a:hover),
+  .search-results :global(li.is-active a) {
+    background: var(--surface-hover);
+  }
+
+  .search-results :global(.search-meta) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .search-results :global(.search-meta .secao) {
+    color: var(--accent);
+  }
+
+  .search-results :global(.search-meta .selo) {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 var(--space-2);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .search-results :global(.titulo) {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .search-results :global(.descricao) {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-results :global(mark) {
+    background: var(--accent-wash);
+    color: var(--accent);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 40rem) {
+    .search-dialog {
+      margin-top: 4vh;
+      max-height: 84vh;
+    }
+  }
+</style>
+
+<script define:vars={{ indexUrl, strings }}>
+  const openBtn = document.querySelector('[data-search-open]');
+  const dialog = document.querySelector('[data-search-dialog]');
+  const input = document.querySelector('[data-search-input]');
+  const closeBtn = document.querySelector('[data-search-close]');
+  const resultsEl = document.querySelector('[data-search-results]');
+  const emptyEl = document.querySelector('[data-search-empty]');
+  const hintEl = document.querySelector('[data-search-hint]');
+
+  if (openBtn && dialog && input && resultsEl && typeof dialog.showModal === 'function') {
+    let indice = null;
+    let indicePromise = null;
+    let ativo = -1;
+    let debounceTimer;
+
+    function carregarIndice() {
+      if (indicePromise) return indicePromise;
+      indicePromise = fetch(indexUrl)
+        .then((r) => (r.ok ? r.json() : []))
+        .then((dados) => {
+          indice = Array.isArray(dados) ? dados : [];
+          return indice;
+        })
+        .catch(() => {
+          indice = [];
+          return indice;
+        });
+      return indicePromise;
+    }
+
+    // remove acento para "cafe" achar "café": comparação simples, sem lib
+    function normalizar(texto) {
+      return (texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+    }
+
+    function pontuar(item, consulta) {
+      const titulo = normalizar(item.titulo);
+      const descricao = normalizar(item.descricao);
+      const tags = (item.tags || []).map(normalizar);
+
+      if (titulo === consulta) return 100;
+      if (titulo.startsWith(consulta)) return 80;
+      if (titulo.includes(consulta)) return 60;
+      if (tags.some((tg) => tg.includes(consulta))) return 40;
+      if (descricao.includes(consulta)) return 20;
+      return 0;
+    }
+
+    // realce aproximado: a versão sem acento tem, na prática, o mesmo
+    // comprimento da original, então os índices batem para o nosso uso
+    function destacar(texto, consulta) {
+      if (!consulta) return texto;
+      const alvo = normalizar(texto);
+      const i = alvo.indexOf(consulta);
+      if (i === -1) return texto;
+      return (
+        texto.slice(0, i) +
+        '<mark>' +
+        texto.slice(i, i + consulta.length) +
+        '</mark>' +
+        texto.slice(i + consulta.length)
+      );
+    }
+
+    function atualizarAtivo(itens) {
+      itens.forEach((a, i) => a.closest('li').classList.toggle('is-active', i === ativo));
+      itens[ativo]?.scrollIntoView({ block: 'nearest' });
+    }
+
+    function renderizar(itens, consulta, exibicao) {
+      resultsEl.innerHTML = '';
+      ativo = -1;
+
+      if (!exibicao) {
+        emptyEl.hidden = true;
+        hintEl.hidden = false;
+        return;
+      }
+      hintEl.hidden = true;
+
+      if (itens.length === 0) {
+        emptyEl.hidden = false;
+        emptyEl.textContent = strings.empty.replace('{query}', exibicao);
+        return;
+      }
+      emptyEl.hidden = true;
+
+      itens.slice(0, 8).forEach((item) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = item.url;
+
+        const secaoTexto = item.secao === 'blog' ? strings.sectionBlog : strings.sectionDevlog;
+        const selo = !item.traduzido
+          ? `<span class="selo">${item.idioma === 'pt' ? strings.onlyPt : strings.onlyEn}</span>`
+          : '';
+
+        a.innerHTML =
+          `<span class="search-meta"><span class="secao">${secaoTexto}</span>` +
+          `<time>${item.data}</time>${selo}</span>` +
+          `<span class="titulo">${destacar(item.titulo, consulta)}</span>` +
+          `<span class="descricao">${item.descricao}</span>`;
+
+        li.appendChild(a);
+        resultsEl.appendChild(li);
+      });
+    }
+
+    async function executarBusca() {
+      const exibicao = input.value.trim();
+      const consulta = normalizar(exibicao);
+      if (!indice) await carregarIndice();
+
+      if (!consulta) {
+        renderizar([], consulta, exibicao);
+        return;
+      }
+
+      const encontrados = indice
+        .map((item) => ({ item, pontos: pontuar(item, consulta) }))
+        .filter((x) => x.pontos > 0)
+        .sort((a, b) => b.pontos - a.pontos || new Date(b.item.data) - new Date(a.item.data))
+        .map((x) => x.item);
+
+      renderizar(encontrados, consulta, exibicao);
+    }
+
+    function abrir() {
+      carregarIndice();
+      input.value = '';
+      renderizar([], '', '');
+      dialog.showModal();
+      requestAnimationFrame(() => input.focus());
+    }
+
+    openBtn.addEventListener('click', abrir);
+    closeBtn?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => openBtn.focus());
+
+    // clique fora do miolo (na área do <dialog>, que cobre a tela toda) fecha
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(executarBusca, 80);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const itens = [...resultsEl.querySelectorAll('a')];
+      if (!itens.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        ativo = Math.min(ativo + 1, itens.length - 1);
+        atualizarAtivo(itens);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        ativo = Math.max(ativo - 1, 0);
+        atualizarAtivo(itens);
+      } else if (e.key === 'Enter' && ativo >= 0) {
+        e.preventDefault();
+        itens[ativo].click();
+      }
+    });
+
+    // atalho global: "/" ou cmd+k/ctrl+k abrem a busca de qualquer página
+    document.addEventListener('keydown', (e) => {
+      const emCampo = ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName);
+      const atalho = (e.key === '/' && !emCampo) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k');
+      if (atalho && !dialog.open) {
+        e.preventDefault();
+        abrir();
+      }
+    });
+  }
+</script>

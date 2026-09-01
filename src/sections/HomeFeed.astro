@@ -21,6 +21,11 @@ const recentes = [
   .slice(0, 6);
 
 // {devlog} e {contato} viram o endereço no idioma da página
+// pequena assinatura pessoal no topo: um terminal falso com o "usuário"
+// felipe@log, ecoando a marca (>_) e o nome do site. As frases trocam
+// sozinhas; sem JS ou com prefers-reduced-motion, a primeira já basta.
+const whoamiLinhas = t('home.whoami.lines').split('|');
+
 const lede = t('home.lede')
   .replaceAll('{devlog}', rota('devlog', lang))
   .replaceAll('{blog}', rota('blog', lang))
@@ -44,6 +49,23 @@ const atalhos = [
       <p class="assinatura">{site.name}</p>
     </div>
     <p class="lede" set:html={lede} />
+
+    <div class="whoami" data-whoami>
+      <p class="whoami-bar">
+        <span class="whoami-dot" aria-hidden="true"></span>
+        <span class="whoami-dot" aria-hidden="true"></span>
+        <span class="whoami-dot" aria-hidden="true"></span>
+        <span class="whoami-user">felipe@log</span>
+      </p>
+      <p class="whoami-line">
+        <span class="whoami-prompt" aria-hidden="true">~$</span> whoami
+      </p>
+      <p class="whoami-line whoami-output">
+        <span class="whoami-prompt" aria-hidden="true">&gt;</span>
+        <span data-whoami-text>{whoamiLinhas[0]}</span
+        ><span class="whoami-cursor" data-whoami-cursor aria-hidden="true"></span>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -180,6 +202,98 @@ const atalhos = [
 
   .lede :global(a:hover) {
     color: var(--accent);
+  }
+
+  /* ---------- whoami: assinatura em forma de terminal ---------- */
+  .whoami {
+    margin-top: var(--space-2);
+    width: fit-content;
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .whoami-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .whoami-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+
+  .whoami-user {
+    margin-left: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .whoami-line {
+    padding: 0 var(--space-4);
+    padding-top: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .whoami-line:last-child {
+    padding-bottom: var(--space-3);
+  }
+
+  .whoami-prompt {
+    color: var(--accent);
+  }
+
+  .whoami-output {
+    color: var(--text);
+    min-height: 1.2em;
+  }
+
+  .whoami-output [data-whoami-text] {
+    transition: opacity 220ms var(--ease);
+  }
+
+  .whoami-cursor {
+    display: inline-block;
+    width: 0.55ch;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    background: var(--accent);
+    animation: whoami-piscar 1s step-end infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .whoami-cursor {
+      animation: none;
+    }
+  }
+
+  @keyframes whoami-piscar {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .whoami {
+      width: 100%;
+    }
   }
 
   @media (max-width: 40rem) {
@@ -349,3 +463,22 @@ const atalhos = [
     line-height: var(--leading-snug);
   }
 </style>
+
+<script define:vars={{ linhas: whoamiLinhas }}>
+  // troca a frase do "whoami" a cada alguns segundos, como se alguém tivesse
+  // digitado de novo. Quem pediu menos movimento na tela vê só a primeira.
+  const saida = document.querySelector('[data-whoami-text]');
+  const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (saida && linhas.length > 1 && !reduzido) {
+    let indice = 0;
+    setInterval(() => {
+      indice = (indice + 1) % linhas.length;
+      saida.style.opacity = '0';
+      setTimeout(() => {
+        saida.textContent = linhas[indice];
+        saida.style.opacity = '1';
+      }, 220);
+    }, 4200);
+  }
+</script>
