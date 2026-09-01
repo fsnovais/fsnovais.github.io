@@ -35,9 +35,6 @@ export const ui = {
     'theme.open': 'Change theme',
     'theme.label': 'Theme',
     'theme.group': 'Terminal themes',
-    'crt.label': 'CRT',
-    'crt.on': 'Turn the CRT effect on',
-    'crt.off': 'Turn the CRT effect off',
     'status.hint': 'press / to search',
     'status.session': 'session',
     'toggle.lang': 'Ver em português',
@@ -101,6 +98,38 @@ export const ui = {
     'contact.error': 'I could not send it right now. Try again in a few minutes.',
     'contact.noKey': 'Form has no key configured. Set PUBLIC_STATICFORMS_KEY.',
 
+    // privacidade
+    'privacy.title': 'Privacy notice',
+    'privacy.eyebrow': 'Privacy',
+    'privacy.description':
+      'What this site collects, why, who else touches it and how to ask me to delete it. No cookies, no analytics, no tracking.',
+    'privacy.updated': 'Last updated on',
+    'privacy.link': 'Privacy',
+    // aviso curto ao pé dos formulários; {privacidade} vira o endereço da página
+    'privacy.formNotice':
+      'By sending, you agree that I process your data as described in the <a href="{privacidade}">privacy notice</a>.',
+
+    // newsletter
+    'newsletter.command': 'subscribe --newsletter',
+    'newsletter.panel': 'newsletter',
+    'newsletter.title': 'Get new posts by email',
+    'newsletter.lede':
+      'One email when something new goes up. No weekly digest, no course, no spam. Unsubscribe in one click.',
+    'newsletter.placeholder': 'you@email.com',
+    'newsletter.button': 'subscribe',
+    'newsletter.sending': 'sending...',
+    'newsletter.ok': 'Almost there. Check your inbox and click the link to confirm.',
+    'newsletter.already': 'That address is already on the list. If you never confirmed, check your inbox.',
+    'newsletter.invalid': 'That does not look like a valid email address.',
+    'newsletter.error': 'Could not subscribe you right now. Try again in a few minutes.',
+    'newsletter.noEndpoint': 'Subscription is not configured yet. Set PUBLIC_NEWSLETTER_ENDPOINT.',
+    'newsletter.emailLabel': 'Email',
+    'newsletter.honeypot': 'Do not fill in this field',
+    'newsletter.confirmTitle': 'Subscription confirmed',
+    'newsletter.confirmText':
+      'You are on the list. You will get an email whenever a new post goes up, and nothing else. Every message carries an unsubscribe link.',
+    'newsletter.confirmBack': 'Back to the site',
+
     // rodapé
     'footer.builtWith': 'Built with Astro',
     'footer.cv': 'CV',
@@ -161,9 +190,6 @@ export const ui = {
     'theme.open': 'Trocar de tema',
     'theme.label': 'Tema',
     'theme.group': 'Temas de terminal',
-    'crt.label': 'CRT',
-    'crt.on': 'Ligar o efeito CRT',
-    'crt.off': 'Desligar o efeito CRT',
     'status.hint': 'aperte / para buscar',
     'status.session': 'sessão',
     'toggle.lang': 'View in English',
@@ -224,6 +250,37 @@ export const ui = {
     'contact.ok': 'Mensagem enviada. Obrigado pelo contato.',
     'contact.error': 'Não consegui enviar agora. Tente de novo em alguns minutos.',
     'contact.noKey': 'Formulário sem chave configurada. Defina PUBLIC_STATICFORMS_KEY.',
+
+    // privacidade
+    'privacy.title': 'Aviso de privacidade',
+    'privacy.eyebrow': 'Privacidade',
+    'privacy.description':
+      'O que este site coleta, para quê, quem mais encosta nisso e como pedir para eu apagar. Sem cookie, sem analytics, sem rastreamento.',
+    'privacy.updated': 'Atualizado em',
+    'privacy.link': 'Privacidade',
+    'privacy.formNotice':
+      'Ao enviar, você concorda que eu trate seus dados como descrito no <a href="{privacidade}">aviso de privacidade</a>.',
+
+    // newsletter
+    'newsletter.command': 'subscribe --newsletter',
+    'newsletter.panel': 'newsletter',
+    'newsletter.title': 'Receba os textos novos por e-mail',
+    'newsletter.lede':
+      'Um e-mail quando sai texto novo. Sem resumo semanal, sem curso, sem spam. Descadastro em um clique.',
+    'newsletter.placeholder': 'voce@email.com',
+    'newsletter.button': 'assinar',
+    'newsletter.sending': 'enviando...',
+    'newsletter.ok': 'Quase lá. Confira sua caixa de entrada e clique no link para confirmar.',
+    'newsletter.already': 'Esse endereço já está na lista. Se você nunca confirmou, olhe a caixa de entrada.',
+    'newsletter.invalid': 'Isso não parece um endereço de e-mail válido.',
+    'newsletter.error': 'Não consegui te inscrever agora. Tente de novo em alguns minutos.',
+    'newsletter.noEndpoint': 'A inscrição ainda não está configurada. Defina PUBLIC_NEWSLETTER_ENDPOINT.',
+    'newsletter.emailLabel': 'E-mail',
+    'newsletter.honeypot': 'Não preencha este campo',
+    'newsletter.confirmTitle': 'Inscrição confirmada',
+    'newsletter.confirmText':
+      'Você está na lista. Vai receber um e-mail sempre que sair texto novo, e nada além disso. Toda mensagem leva um link de descadastro.',
+    'newsletter.confirmBack': 'Voltar ao site',
 
     'footer.builtWith': 'Feito com Astro',
     'footer.cv': 'Currículo',

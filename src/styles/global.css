@@ -98,45 +98,6 @@ select {
 }
 
 /* =========================================================================
-   CAMADA CRT
-   Linhas de varredura e um leve escurecimento nas bordas, por cima de tudo.
-   Some por completo com --scan-opacity: 0, que é o que o botão da barra de
-   status e o tema claro fazem. Nunca captura clique.
-   ========================================================================= */
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: var(--scan-opacity);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.9) 0,
-    rgba(0, 0, 0, 0.9) 1px,
-    transparent 1px,
-    transparent var(--scan-size)
-  );
-  transition: opacity 240ms var(--ease);
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9997;
-  pointer-events: none;
-  opacity: calc(var(--scan-opacity) * 5);
-  background: radial-gradient(
-    ellipse 120% 120% at 50% 50%,
-    transparent 55%,
-    rgba(0, 0, 0, 0.55) 100%
-  );
-  transition: opacity 240ms var(--ease);
-}
-
-/* =========================================================================
    TIPOGRAFIA
    ========================================================================= */
 
@@ -350,10 +311,16 @@ a:hover {
    como numa interface de terminal (ncurses, lazygit, textual).
    ========================================================================= */
 
+/*
+  O painel é uma caixa de borda, não uma caixa preenchida. O fundo fica
+  transparente de propósito: o título encaixado na borda de cima é desenhado
+  metade sobre a seção e metade sobre o painel, e qualquer fundo próprio aqui
+  criaria uma emenda visível atrás dele.
+*/
 .panel {
   position: relative;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: transparent;
   padding: var(--space-5);
 }
 

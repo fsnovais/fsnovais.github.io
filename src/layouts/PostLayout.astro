@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Newsletter from '../components/Newsletter.astro';
 import { formatarData, dataIso, tempoDeLeitura } from '../lib/posts.js';
 import { site } from '../data/site.js';
 import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
@@ -77,6 +78,9 @@ const articleLd = {
           <a href={`${rota('sobre', lang)}#contato`}>{t('post.footerForm')}</a>.
         </p>
       </footer>
+
+      {/* a intenção de assinar é maior aqui: a pessoa acabou de ler o texto */}
+      <Newsletter id="nl-post" />
     </div>
   </article>
 </BaseLayout>

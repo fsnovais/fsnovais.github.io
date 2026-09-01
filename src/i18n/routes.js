@@ -15,6 +15,9 @@ export const rotas = {
   devlog: { pt: '/devlog', en: '/devlog' },
   projetos: { pt: '/projetos', en: '/projects' },
   sobre: { pt: '/sobre', en: '/about' },
+  privacidade: { pt: '/privacidade', en: '/privacy' },
+  // destino do link de confirmação da newsletter, enviado pela Brevo
+  newsletterOk: { pt: '/newsletter/confirmado', en: '/newsletter/confirmed' },
 };
 
 /** Endereço de uma página no idioma pedido, já com o prefixo. */

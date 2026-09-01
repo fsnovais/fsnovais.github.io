@@ -8,6 +8,7 @@ import { listarComTraducao, dataIso } from '../lib/posts.js';
 import { site } from '../data/site.js';
 import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
 import { rota } from '../i18n/routes.js';
+import Newsletter from '../components/Newsletter.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -113,6 +114,10 @@ const atalhos = [
       )
     }
   </div>
+</section>
+
+<section class="container assinar">
+  <Newsletter id="nl-home" />
 </section>
 
 <section class="section mais on-alt">
@@ -341,6 +346,11 @@ const atalhos = [
     border-block: 1px solid var(--border);
   }
 
+  /* ---------- inscrição ---------- */
+  .assinar {
+    padding-bottom: var(--space-6);
+  }
+
   /* ---------- atalhos em painéis ---------- */
   .mais {
     border-top: 1px solid var(--border);
@@ -367,12 +377,6 @@ const atalhos = [
     gap: var(--space-2);
     height: 100%;
     text-decoration: none;
-    /*
-      O painel fica transparente de propósito: o título encaixado na borda de
-      cima é desenhado sobre o fundo da seção, e qualquer fundo próprio aqui
-      criaria um degrau visível atrás dele.
-    */
-    background: transparent;
     transition: border-color var(--dur) var(--ease);
   }
 

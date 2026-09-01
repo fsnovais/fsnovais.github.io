@@ -1,0 +1,272 @@
+---
+/*
+  Inscrição na newsletter.
+
+  O formulário não conhece provedor nenhum: ele posta um JSON simples
+  ({ email, lang }) para o endereço em PUBLIC_NEWSLETTER_ENDPOINT, que é o
+  Cloudflare Worker em worker/newsletter.js. Trocar de Brevo para outro serviço
+  amanhã é editar o Worker; este arquivo continua igual.
+
+  A inscrição é por dupla confirmação: o retorno de sucesso aqui significa
+  "e-mail de confirmação enviado", não "está na lista".
+*/
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// consentimento informado: o aviso fica ao lado do campo, não escondido
+const aviso = t('privacy.formNotice').replaceAll('{privacidade}', rota('privacidade', lang));
+const endpoint = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT ?? '';
+
+// o mesmo componente aparece no fim do post e na home: os ids precisam ser
+// únicos por instância, senão duas <label for> apontam para o mesmo campo
+const { id = 'nl' } = Astro.props;
+const idEmail = `${id}-email`;
+const idArmadilha = `${id}-site`;
+---
+
+<section class="assinatura-bloco" aria-labelledby={`${id}-titulo`}>
+  <p class="comando" aria-hidden="true">
+    <span class="prompt">$</span>{' '}{t('newsletter.command')}
+  </p>
+
+  <div class="panel">
+    <span class="panel-title">{t('newsletter.panel')}</span>
+
+    <h2 class="titulo" id={`${id}-titulo`}>{t('newsletter.title')}</h2>
+    <p class="lede">{t('newsletter.lede')}</p>
+
+    <form
+      class="form"
+      data-nl-form
+      data-endpoint={endpoint}
+      data-lang={lang}
+      data-msg-ok={t('newsletter.ok')}
+      data-msg-ja={t('newsletter.already')}
+      data-msg-invalido={t('newsletter.invalid')}
+      data-msg-erro={t('newsletter.error')}
+      data-msg-sem-endpoint={t('newsletter.noEndpoint')}
+      data-rotulo-enviar={t('newsletter.button')}
+      data-rotulo-enviando={t('newsletter.sending')}
+      novalidate
+    >
+      <label class="visually-hidden" for={idEmail}>{t('newsletter.emailLabel')}</label>
+
+      <div class="linha">
+        <span class="seta" aria-hidden="true">&gt;</span>
+        <input
+          id={idEmail}
+          name="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          spellcheck="false"
+          placeholder={t('newsletter.placeholder')}
+          required
+        />
+        <button class="btn" type="submit" data-nl-submit>{t('newsletter.button')}</button>
+      </div>
+
+      {/* armadilha de spam: humano não preenche um campo escondido */}
+      <p class="armadilha" aria-hidden="true">
+        <label for={idArmadilha}>{t('newsletter.honeypot')}</label>
+        <input id={idArmadilha} name="site" type="text" tabindex="-1" autocomplete="off" />
+      </p>
+
+      <p class="retorno" role="status" data-nl-status></p>
+
+      <p class="aviso-privacidade" set:html={aviso} />
+    </form>
+  </div>
+</section>
+
+<style>
+  .assinatura-bloco {
+    margin-block: var(--space-6);
+  }
+
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    margin-bottom: var(--space-3);
+  }
+
+  .titulo {
+    font-size: var(--step-2);
+    letter-spacing: var(--track-tight);
+    color: var(--text);
+  }
+
+  .lede {
+    margin-top: var(--space-2);
+    max-width: 58ch;
+    font-family: var(--font-prose);
+    font-size: var(--step-0);
+    line-height: var(--leading-snug);
+    color: var(--text-muted);
+  }
+
+  .form {
+    margin-top: var(--space-4);
+  }
+
+  /* a linha inteira imita um prompt: seta, campo, comando */
+  .linha {
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-2);
+    max-width: 34rem;
+  }
+
+  .seta {
+    display: flex;
+    align-items: center;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    font-weight: 700;
+  }
+
+  .linha input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .linha .btn {
+    flex: none;
+  }
+
+  .armadilha {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* o retorno chega como saída de comando, com prefixo e cor de estado */
+  .retorno {
+    margin-top: var(--space-3);
+    min-height: 1.5em;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .retorno[data-state]::before {
+    content: '> ';
+    color: var(--text-faint);
+  }
+
+  .retorno[data-state='ok'] {
+    color: var(--ok);
+  }
+
+  .retorno[data-state='erro'] {
+    color: var(--error);
+  }
+
+  .aviso-privacidade {
+    margin-top: var(--space-2);
+    max-width: 62ch;
+    font-family: var(--font-prose);
+    font-size: var(--step--1);
+    line-height: var(--leading-snug);
+    color: var(--text-faint);
+  }
+
+  .aviso-privacidade :global(a) {
+    color: var(--text-muted);
+  }
+
+  .aviso-privacidade :global(a:hover) {
+    color: var(--on-accent);
+    background: var(--accent);
+    text-decoration-color: transparent;
+  }
+
+  @media (max-width: 34rem) {
+    .linha {
+      flex-wrap: wrap;
+    }
+
+    .linha input {
+      flex-basis: 100%;
+    }
+  }
+</style>
+
+<script>
+  /*
+    Um só bloco de script cuida de todas as instâncias da página: a home tem uma
+    e o post tem outra, e cada uma guarda as próprias mensagens nos data-*.
+  */
+  document.querySelectorAll('[data-nl-form]').forEach((form) => {
+    const status = form.querySelector('[data-nl-status]');
+    const botao = form.querySelector('[data-nl-submit]');
+    const campo = form.querySelector('input[name="email"]');
+    const txt = form.dataset;
+
+    function responder(mensagem, estado) {
+      status.textContent = mensagem;
+      if (estado) status.dataset.state = estado;
+      else delete status.dataset.state;
+    }
+
+    form.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+
+      // robô que preencheu o campo escondido recebe sucesso e não vai a lugar nenhum
+      if (form.querySelector('input[name="site"]').value) {
+        responder(txt.msgOk, 'ok');
+        form.reset();
+        return;
+      }
+
+      const email = campo.value.trim();
+      // validação de forma, não de existência: quem decide de verdade é a
+      // confirmação por e-mail
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        responder(txt.msgInvalido, 'erro');
+        campo.focus();
+        return;
+      }
+
+      if (!txt.endpoint) {
+        responder(txt.msgSemEndpoint, 'erro');
+        return;
+      }
+
+      botao.disabled = true;
+      botao.textContent = txt.rotuloEnviando;
+      responder('', null);
+
+      try {
+        const resposta = await fetch(txt.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, lang: txt.lang }),
+        });
+
+        const dados = await resposta.json().catch(() => ({}));
+
+        if (resposta.ok) {
+          responder(txt.msgOk, 'ok');
+          form.reset();
+        } else if (dados.erro === 'ja_inscrito') {
+          responder(txt.msgJa, 'ok');
+          form.reset();
+        } else if (dados.erro === 'email_invalido') {
+          responder(txt.msgInvalido, 'erro');
+        } else {
+          throw new Error(dados.erro || 'falha');
+        }
+      } catch {
+        responder(txt.msgErro, 'erro');
+      } finally {
+        botao.disabled = false;
+        botao.textContent = txt.rotuloEnviar;
+      }
+    });
+  });
+</script>

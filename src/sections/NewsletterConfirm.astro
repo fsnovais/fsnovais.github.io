@@ -1,0 +1,79 @@
+---
+/*
+  Página para onde a Brevo redireciona depois que a pessoa clica no link de
+  confirmação. Ela existe para fechar o ciclo: quem clicou precisa ver que
+  deu certo, em vez de cair numa página genérica do provedor.
+*/
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section class="section confirmacao">
+  <div class="container confirmacao-inner">
+    <p class="comando" aria-hidden="true">
+      <span class="prompt">$</span>{' '}subscribe --confirm
+    </p>
+    <p class="saida-ok">
+      <span class="marca" aria-hidden="true">[ok]</span> 201 created
+    </p>
+
+    <h1 class="phos">{t('newsletter.confirmTitle')}</h1>
+    <p class="texto">{t('newsletter.confirmText')}</p>
+
+    <p class="voltar">
+      <a class="btn" href={rota('home', lang)}>{t('newsletter.confirmBack')}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .confirmacao {
+    display: flex;
+    align-items: center;
+    min-height: 58vh;
+  }
+
+  .confirmacao-inner {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .saida-ok {
+    font-size: var(--step--1);
+    color: var(--ok);
+    margin-bottom: var(--space-3);
+  }
+
+  .marca {
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    letter-spacing: -0.035em;
+  }
+
+  .texto {
+    font-family: var(--font-prose);
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
+    color: var(--text-muted);
+    max-width: 58ch;
+  }
+
+  .voltar {
+    margin-top: var(--space-4);
+  }
+</style>

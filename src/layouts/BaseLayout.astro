@@ -75,7 +75,7 @@ const personLd = {
     <meta name="generator" content={Astro.generator} />
 
     <!--
-      Aplica tema e CRT ANTES da primeira pintura. Sem isto, quem escolheu
+      Aplica o tema ANTES da primeira pintura. Sem isto, quem escolheu
       gruvbox veria um lampejo âmbar a cada navegação.
       Quem tinha 'dark' ou 'light' salvos da versão anterior do site é migrado
       para o tema equivalente, sem perder a escolha.
@@ -92,11 +92,10 @@ const personLd = {
         if (temas.indexOf(tema) > -1) {
           document.documentElement.setAttribute('data-theme', tema);
         }
-        if (localStorage.getItem('crt') === 'off') {
-          document.documentElement.setAttribute('data-crt', 'off');
-        }
+        // 'crt' era a chave de um efeito que saiu do site; some com o resto
+        localStorage.removeItem('crt');
       } catch (e) {
-        /* storage bloqueado: tema do sistema e CRT ligado */
+        /* storage bloqueado: segue o tema do sistema */
       }
     </script>
 

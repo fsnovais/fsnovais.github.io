@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsletterConfirm from '../../sections/NewsletterConfirm.astro';
+import { site } from '../../data/site.js';
+import { useTranslations } from '../../i18n/utils.js';
+
+const t = useTranslations('pt');
+---
+
+<BaseLayout
+  title={`${t('newsletter.confirmTitle')}, ${site.brand}`}
+  description={t('newsletter.confirmText')}
+  noindex
+>
+  <NewsletterConfirm />
+</BaseLayout>

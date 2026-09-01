@@ -1,0 +1,131 @@
+---
+/*
+  Aviso de privacidade. O texto vive em src/i18n/privacidade.js; aqui só a
+  marcação. A página segue a mesma regra de leitura do artigo: títulos em
+  mono com marcador ##, corpo em sans.
+*/
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+import { privacidade, atualizadoEm } from '../i18n/privacidade.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const c = privacidade[lang];
+
+// {contato} vira o endereço do formulário no idioma da página
+const contato = `${rota('sobre', lang)}#contato`;
+const resolver = (html) => String(html).replaceAll('{contato}', contato);
+
+// a data sai do arquivo de texto e é formatada no idioma de quem lê
+const data = new Date(`${atualizadoEm}T12:00:00Z`);
+const dataLegivel = new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'pt-BR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(data);
+---
+
+<section class="section">
+  <div class="container pagina">
+    <div class="section-head">
+      <p class="comando" aria-hidden="true">
+        <span class="prompt">$</span>{' '}cat ~/privacidade.md
+      </p>
+      <h1 class="phos">{t('privacy.title')}</h1>
+      <p class="atualizado">
+        {t('privacy.updated')}{' '}
+        <time datetime={atualizadoEm}>{dataLegivel}</time>
+      </p>
+    </div>
+
+    <div class="prosa">
+      <p class="resumo">{c.resumo}</p>
+
+      {
+        c.blocos.map((bloco) => (
+          <>
+            <h2>{bloco.titulo}</h2>
+            {bloco.paragrafos.map((texto) => (
+              <p set:html={resolver(texto)} />
+            ))}
+          </>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .pagina {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+  }
+
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    letter-spacing: -0.035em;
+  }
+
+  .atualizado {
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .prosa {
+    max-width: var(--measure-prose);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    font-family: var(--font-prose);
+  }
+
+  /* o resumo é a parte que a maioria vai ler de fato: ganha destaque */
+  .resumo {
+    padding: var(--space-4);
+    border-left: 2px solid var(--accent);
+    background: var(--bg-alt);
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
+    color: var(--text);
+  }
+
+  .prosa p {
+    color: var(--text-muted);
+    font-size: var(--step-0);
+    line-height: var(--leading-prose);
+  }
+
+  .prosa h2 {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    color: var(--text);
+    margin-top: var(--space-5);
+  }
+
+  .prosa h2::before {
+    content: '## ';
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .prosa :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .prosa :global(a) {
+    color: var(--link);
+  }
+
+  .prosa :global(a:hover) {
+    background: var(--accent);
+    color: var(--on-accent);
+    text-decoration-color: transparent;
+  }
+</style>

@@ -1,10 +1,11 @@
 ---
 /*
-  Rodapé como a última saída da sessão. Os controles (tema, CRT, idioma, busca)
+  Rodapé como a última saída da sessão. Os controles (tema, idioma, busca)
   ficam na barra de status; aqui sobram só os endereços que levam para fora.
 */
 import { site } from '../data/site.js';
 import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -12,6 +13,7 @@ const ano = new Date().getFullYear();
 
 const links = [
   ...site.socials.map((s) => ({ rotulo: s.label.toLowerCase(), url: s.url, externo: true })),
+  { rotulo: t('privacy.link').toLowerCase(), url: rota('privacidade', lang) },
   ...(site.cv ? [{ rotulo: t('footer.cv').toLowerCase(), url: site.cv, externo: true }] : []),
   ...(site.email ? [{ rotulo: 'email', url: `mailto:${site.email}` }] : []),
   { rotulo: 'rss/blog', url: `/rss/${lang}/blog.xml` },

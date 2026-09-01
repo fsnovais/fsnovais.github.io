@@ -2,10 +2,15 @@
 // A chave do StaticForms sai do código e vira variável de ambiente.
 // Defina PUBLIC_STATICFORMS_KEY em .env (local) e como secret no GitHub Actions.
 import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
+
+// o consentimento tem de ser informado: quem envia precisa ver, ali mesmo,
+// o que acontece com o que digitou
+const aviso = t('privacy.formNotice').replaceAll('{privacidade}', rota('privacidade', lang));
 ---
 
 <section class="section contact" id="contato">
@@ -54,6 +59,8 @@ const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
         <button class="btn btn-solid" type="submit" data-submit>{t('contact.send')}</button>
         <p class="form-status" role="status" data-status></p>
       </div>
+
+      <p class="aviso-privacidade" set:html={aviso} />
     </form>
   </div>
 </section>
@@ -162,6 +169,25 @@ const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
 
   .form-status[data-state='erro'] {
     color: var(--error);
+  }
+
+  .aviso-privacidade {
+    margin-top: var(--space-4);
+    max-width: 62ch;
+    font-family: var(--font-prose);
+    font-size: var(--step--1);
+    line-height: var(--leading-snug);
+    color: var(--text-faint);
+  }
+
+  .aviso-privacidade :global(a) {
+    color: var(--text-muted);
+  }
+
+  .aviso-privacidade :global(a:hover) {
+    color: var(--on-accent);
+    background: var(--accent);
+    text-decoration-color: transparent;
   }
 </style>
 

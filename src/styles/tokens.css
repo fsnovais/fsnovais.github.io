@@ -73,18 +73,18 @@
   --ease: cubic-bezier(0.2, 0.6, 0.35, 1);
   --dur: 120ms;
 
-  /* ---------- CRT ---------- */
-  /* ligado por padrão, discreto; a barra de status desliga */
-  --scan-opacity: 0.05;
-  --scan-size: 3px;
+  /*
+    Brilho de fósforo. Aplicado só onde ajuda a identidade e não atrapalha a
+    leitura: título, prompt, cursor e rótulo de painel, nunca no corpo do texto.
+
+    Aqui havia também linhas de varredura e escurecimento de bordas, com um
+    botão para desligar. Medido lado a lado, o efeito das duas era de 0,6 em
+    255 de diferença média, ou seja, invisível. Um controle na tela para uma
+    coisa que ninguém vê é só peso, então saíram os dois e ficou o brilho, que
+    é a parte que se enxerga.
+  */
   --glow: 0 0 12px color-mix(in srgb, var(--accent) 34%, transparent);
   --glow-soft: 0 0 18px color-mix(in srgb, var(--accent) 18%, transparent);
-}
-
-:root[data-crt='off'] {
-  --scan-opacity: 0;
-  --glow: none;
-  --glow-soft: none;
 }
 
 /* =========================================================================
@@ -274,7 +274,6 @@
   color-scheme: light;
 
   /* fósforo não brilha em papel */
-  --scan-opacity: 0;
   --glow: none;
   --glow-soft: none;
 }
@@ -312,7 +311,6 @@
 
     color-scheme: light;
 
-    --scan-opacity: 0;
     --glow: none;
     --glow-soft: none;
   }

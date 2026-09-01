@@ -34,8 +34,13 @@ jobs:
         run: npm run check:i18n
 
       - name: Build
+        # Os dois valores são PUBLIC_: o Astro embute eles no JavaScript do site,
+        # então qualquer visitante lê no código-fonte. O lugar certo deles é
+        # Variables, não Secrets. Aceitamos os dois porque guardar no lugar
+        # errado quebraria o formulário sem nenhuma mensagem de erro.
         env:
-          PUBLIC_STATICFORMS_KEY: ${{ secrets.PUBLIC_STATICFORMS_KEY }}
+          PUBLIC_STATICFORMS_KEY: ${{ vars.PUBLIC_STATICFORMS_KEY || secrets.PUBLIC_STATICFORMS_KEY }}
+          PUBLIC_NEWSLETTER_ENDPOINT: ${{ vars.PUBLIC_NEWSLETTER_ENDPOINT || secrets.PUBLIC_NEWSLETTER_ENDPOINT }}
         run: npm run build
 
       - name: Conferir links e âncoras

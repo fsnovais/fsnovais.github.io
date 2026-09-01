@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrivacyPage from '../sections/PrivacyPage.astro';
+import { site } from '../data/site.js';
+import { useTranslations } from '../i18n/utils.js';
+
+const t = useTranslations('pt');
+---
+
+<BaseLayout title={`${t('privacy.title')}, ${site.brand}`} description={t('privacy.description')}>
+  <PrivacyPage />
+</BaseLayout>
