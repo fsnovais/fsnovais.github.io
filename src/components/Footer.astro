@@ -1,139 +1,148 @@
 ---
+/*
+  Rodapé como a última saída da sessão. Os controles (tema, CRT, idioma, busca)
+  ficam na barra de status; aqui sobram só os endereços que levam para fora.
+*/
 import { site } from '../data/site.js';
 import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const ano = new Date().getFullYear();
+
+const links = [
+  ...site.socials.map((s) => ({ rotulo: s.label.toLowerCase(), url: s.url, externo: true })),
+  ...(site.cv ? [{ rotulo: t('footer.cv').toLowerCase(), url: site.cv, externo: true }] : []),
+  ...(site.email ? [{ rotulo: 'email', url: `mailto:${site.email}` }] : []),
+  { rotulo: 'rss/blog', url: `/rss/${lang}/blog.xml` },
+  { rotulo: 'rss/devlog', url: `/rss/${lang}/devlog.xml` },
+];
 ---
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <span class="brand-mark" aria-hidden="true">{site.mark}</span>
-      <div>
-        <p class="footer-name">{site.brand}</p>
-        <p class="footer-role">{t('site.tagline')}</p>
-      </div>
-    </div>
-
-    <nav aria-label={t('nav.footer')}>
-      <ul class="footer-links">
-        {
-          site.socials.map((s) => (
-            <li>
-              <a href={s.url} target="_blank" rel="noopener noreferrer">
-                {s.label}
-              </a>
-            </li>
-          ))
-        }
-        {
-          site.cv && (
-            <li>
-              <a href={site.cv} target="_blank" rel="noopener noreferrer">
-                {t('footer.cv')}
-              </a>
-            </li>
-          )
-        }
-        {
-          site.email && (
-            <li>
-              <a href={`mailto:${site.email}`}>Email</a>
-            </li>
-          )
-        }
-      </ul>
-    </nav>
-
-    <p class="footer-note">
-      <span>&copy; {ano}</span>
-      <span class="footer-sep" aria-hidden="true">/</span>
-      <span>{t('footer.builtWith')}</span>
+<footer class="rodape">
+  <div class="container rodape-inner">
+    <p class="comando">
+      <span class="prompt" aria-hidden="true">$</span> cat ~/.signature
     </p>
+
+    <div class="saida">
+      <p class="linha">
+        <span class="selo phos" aria-hidden="true">{site.mark}</span>
+        <span class="nome">{site.brand}</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span class="tagline">{t('site.tagline')}</span>
+      </p>
+
+      <nav aria-label={t('nav.footer')}>
+        <ul class="links">
+          {
+            links.map((l) => (
+              <li>
+                <a
+                  href={l.url}
+                  target={l.externo ? '_blank' : undefined}
+                  rel={l.externo ? 'noopener noreferrer' : undefined}
+                >
+                  {l.rotulo}
+                  {l.externo && <span aria-hidden="true"> ↗</span>}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <p class="nota">
+        <span>&copy; {ano} {site.name}</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{t('footer.builtWith')}</span>
+      </p>
+    </div>
   </div>
 </footer>
 
 <style>
-  .site-footer {
+  .rodape {
     border-top: 1px solid var(--border);
-    padding-block: var(--space-6);
-    background: var(--bg);
+    background: var(--bg-alt);
+    padding-block: var(--space-5) var(--space-6);
   }
 
-  .footer-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-5);
-    flex-wrap: wrap;
-  }
-
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .brand-mark {
-    display: grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-
-  .footer-name {
-    font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.2;
-  }
-
-  .footer-role {
-    font-family: var(--font-mono);
+  .comando {
     font-size: var(--step--1);
     color: var(--text-faint);
-    line-height: 1.4;
+    margin-bottom: var(--space-3);
   }
 
-  .footer-links {
+  .saida {
     display: flex;
-    gap: var(--space-5);
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-left: var(--space-4);
+    border-left: 1px solid var(--border);
+  }
+
+  .linha {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: var(--step-0);
+  }
+
+  .selo {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: var(--step--2);
+    font-weight: 700;
+  }
+
+  .nome {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .tagline {
+    color: var(--text-muted);
+  }
+
+  .sep {
+    color: var(--border-strong);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
     list-style: none;
     padding: 0;
   }
 
-  .footer-links a {
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
     color: var(--text-muted);
+    font-size: var(--step--1);
     text-decoration: none;
-    font-size: var(--step--1);
+    border-bottom: 1px dotted var(--border-strong);
   }
 
-  .footer-links a:hover {
-    color: var(--accent);
+  .links a:hover {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-bottom-color: transparent;
   }
 
-  .footer-note {
+  .nota {
     display: flex;
-    gap: var(--space-3);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: var(--step--2);
     color: var(--text-faint);
-  }
-
-  .footer-sep {
-    color: var(--border-strong);
-  }
-
-  @media (max-width: 40rem) {
-    .footer-inner {
-      justify-content: flex-start;
-    }
   }
 </style>

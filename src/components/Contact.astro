@@ -11,9 +11,11 @@ const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
 <section class="section contact" id="contato">
   <div class="container contact-inner">
     <div class="section-head">
-      <p class="eyebrow">{t('contact.eyebrow')}</p>
-      <h2>{t('contact.title')}</h2>
-      <p>{t('contact.intro')}</p>
+      <p class="comando">
+        <span class="prompt" aria-hidden="true">$</span> ./contato.sh --to felipe
+      </p>
+      <h2 class="phos">{t('contact.title')}</h2>
+      <p class="intro">{t('contact.intro')}</p>
     </div>
 
     <form
@@ -67,6 +69,24 @@ const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
     margin-inline: auto;
   }
 
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  h2 {
+    font-size: var(--step-3);
+    letter-spacing: -0.035em;
+  }
+
+  .intro {
+    font-family: var(--font-prose);
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
+    color: var(--text-muted);
+    max-width: 66ch;
+  }
+
   .form {
     display: flex;
     flex-direction: column;
@@ -88,36 +108,26 @@ const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
   .field {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-1);
   }
 
+  /* rótulo em forma de bandeira: --nome, --email, --mensagem */
   label {
     font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: var(--step--2);
     letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-faint);
   }
 
-  input,
-  textarea {
-    width: 100%;
-    padding: var(--space-3);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    transition: border-color var(--dur) var(--ease);
-  }
-
-  input:hover,
-  textarea:hover {
-    border-color: var(--border-strong);
+  label::before {
+    content: '--';
+    color: var(--accent);
   }
 
   textarea {
     resize: vertical;
-    min-height: 8rem;
+    min-height: 9rem;
+    line-height: var(--leading-body);
   }
 
   .honeypot {
@@ -139,6 +149,11 @@ const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
   .form-status {
     font-size: var(--step--1);
     color: var(--text-muted);
+  }
+
+  /* o retorno do envio ganha prefixo de saída de comando */
+  .form-status[data-state]::before {
+    content: '> ';
   }
 
   .form-status[data-state='ok'] {

@@ -16,9 +16,12 @@ const outroPrefixado = rota(colecao === 'blog' ? 'devlog' : 'blog', lang);
 <section class="section">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">{t(`${colecao}.eyebrow`)}</p>
-      <h1>{t(`${colecao}.title`)}</h1>
-      <p>
+      <p class="comando">
+        <span class="prompt" aria-hidden="true">$</span> cd ~/log/{colecao} && ls -lt{' '}
+        <span class="contagem" aria-hidden="true">({itens.length})</span>
+      </p>
+      <h1 class="phos">{t(`${colecao}.title`)}</h1>
+      <p class="intro">
         {t(`${colecao}.intro`)} <a href={outroPrefixado}>{t(`${colecao}.introLink`)}</a>.
       </p>
       <p class="feed-link">
@@ -31,16 +34,41 @@ const outroPrefixado = rota(colecao === 'blog' ? 'devlog' : 'blog', lang);
 </section>
 
 <style>
-  h1 {
-    font-size: var(--step-3);
-  }
-  .feed-link a {
-    font-family: var(--font-mono);
+  .comando {
     font-size: var(--step--1);
     color: var(--text-faint);
-    text-decoration: none;
   }
+
+  .contagem {
+    color: var(--border-strong);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    letter-spacing: -0.035em;
+  }
+
+  .intro {
+    font-family: var(--font-prose);
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
+    color: var(--text-muted);
+    max-width: 66ch;
+  }
+
+  .feed-link a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    font-size: var(--step--2);
+    color: var(--text-faint);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border-strong);
+  }
+
   .feed-link a:hover {
-    color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+    border-bottom-color: transparent;
   }
 </style>

@@ -28,8 +28,10 @@ function resolver(html) {
 <section class="section">
   <div class="container sobre">
     <div class="section-head">
-      <p class="eyebrow">{t('about.eyebrow')}</p>
-      <h1>Felipe Novais</h1>
+      <p class="comando">
+        <span class="prompt" aria-hidden="true">$</span> cat ~/sobre.md
+      </p>
+      <h1 class="phos">Felipe Novais</h1>
     </div>
 
     <div class="prosa">
@@ -68,32 +70,63 @@ function resolver(html) {
     margin-inline: auto;
   }
 
-  h1 {
-    font-size: var(--step-3);
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
   }
 
+  h1 {
+    font-size: var(--step-3);
+    letter-spacing: -0.035em;
+  }
+
+  /* texto longo em sans, títulos em mono: mesma regra do artigo */
   .prosa {
-    max-width: var(--measure);
+    max-width: var(--measure-prose);
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
+    font-family: var(--font-prose);
   }
 
   .destaque {
     font-size: var(--step-1);
     color: var(--text);
-    line-height: 1.6;
+    line-height: var(--leading-prose);
   }
 
   .prosa p {
     color: var(--text-muted);
-    line-height: 1.7;
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
+  }
+
+  .prosa :global(a) {
+    color: var(--link);
+  }
+
+  .prosa :global(a:hover) {
+    background: var(--accent);
+    color: var(--on-accent);
+    text-decoration-color: transparent;
+  }
+
+  .prosa :global(strong) {
+    color: var(--text);
+    font-weight: 600;
   }
 
   .prosa h2 {
+    font-family: var(--font-mono);
     font-size: var(--step-2);
     color: var(--text);
     margin-top: var(--space-4);
+  }
+
+  .prosa h2::before {
+    content: '## ';
+    color: var(--accent);
+    font-weight: 400;
   }
 
   .cta {

@@ -6,40 +6,47 @@ import sharp from 'sharp';
 export const OG_LARGURA = 1200;
 export const OG_ALTURA = 630;
 
-// Cores tiradas do tema escuro em src/styles/tokens.css.
-const BG = '#0c0f13';
+/*
+  O cartão de compartilhamento é a janela do site em miniatura: barra de título,
+  comando, saída. Cores do tema amber, em src/styles/tokens.css.
+
+  A fonte é IBM Plex Mono e não JetBrains Mono porque o satori lê woff e ttf,
+  e a JetBrains variável só é distribuída em woff2. Nas dimensões de um cartão
+  as duas se comportam igual; quem olha vê um terminal, que é o objetivo.
+*/
+const BG = '#0b0e12';
+const BARRA = '#101419';
 const BORDA = '#232b35';
-const TEXTO = '#e7ecf2';
-const SUAVE = '#9aa7b6';
-const FRACO = '#697687';
-const ACENTO = '#e8b04b';
+const BORDA_FORTE = '#3a4553';
+const TEXTO = '#e6ecf3';
+const SUAVE = '#a2b0c0';
+const FRACO = '#8494a6';
+const ACENTO = '#ffb043';
 
 const raizFontes = path.join(
   process.cwd(),
-  'node_modules/@fontsource/ibm-plex-sans/files'
+  'node_modules/@fontsource/ibm-plex-mono/files'
 );
 
 function carregarFonte(peso) {
   return fs.readFileSync(
-    path.join(raizFontes, `ibm-plex-sans-latin-${peso}-normal.woff`)
+    path.join(raizFontes, `ibm-plex-mono-latin-${peso}-normal.woff`)
   );
 }
 
 const fontes = [
-  { name: 'Plex', data: carregarFonte(400), weight: 400, style: 'normal' },
-  { name: 'Plex', data: carregarFonte(600), weight: 600, style: 'normal' },
-  { name: 'Plex', data: carregarFonte(700), weight: 700, style: 'normal' },
+  { name: 'Mono', data: carregarFonte(400), weight: 400, style: 'normal' },
+  { name: 'Mono', data: carregarFonte(500), weight: 500, style: 'normal' },
+  { name: 'Mono', data: carregarFonte(700), weight: 700, style: 'normal' },
 ];
 
-/**
- * Escala o título conforme o comprimento, para título longo não estourar o cartão.
- */
+/** Monoespaçado é largo: o título encolhe mais cedo do que encolheria num sans. */
 function tamanhoDoTitulo(titulo) {
   const n = titulo.length;
-  if (n <= 28) return 76;
-  if (n <= 45) return 64;
-  if (n <= 70) return 54;
-  return 46;
+  if (n <= 24) return 62;
+  if (n <= 40) return 52;
+  if (n <= 62) return 44;
+  return 38;
 }
 
 function recortar(texto, max) {
@@ -47,131 +54,135 @@ function recortar(texto, max) {
   return texto.slice(0, max).replace(/\s+\S*$/, '') + '...';
 }
 
-/**
- * Monta o cartão. Sem gradiente, coerente com o tema do site:
- * fundo quase preto, uma régua de acento no topo e hierarquia de texto clara.
- */
+const div = (style, children) => ({ type: 'div', props: { style, children } });
+
+/** Os três quadros da barra de título, iguais aos do cabeçalho do site. */
+function quadros() {
+  return div(
+    { display: 'flex', gap: 8 },
+    /* o satori exige display explícito em qualquer nó com lista de filhos,
+       mesmo quando a lista está vazia, como é o caso destes quadrados */
+    [0, 1, 2].map(() =>
+      div({ display: 'flex', width: 12, height: 12, border: `1px solid ${BORDA_FORTE}` }, '')
+    )
+  );
+}
+
 function montar({ eyebrow, titulo, descricao, rodape }) {
-  return {
-    type: 'div',
-    props: {
-      style: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        backgroundColor: BG,
-        padding: '72px 80px',
-        fontFamily: 'Plex',
-        borderTop: `10px solid ${ACENTO}`,
-      },
-      children: [
+  const comando = eyebrow ? `cat ~/log/${eyebrow.toLowerCase()}` : 'cat ~/log';
+
+  return div(
+    {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: BG,
+      fontFamily: 'Mono',
+    },
+    [
+      // barra de título da janela
+      div(
         {
-          type: 'div',
-          props: {
-            style: { display: 'flex', flexDirection: 'column' },
-            children: [
-              eyebrow && {
-                type: 'div',
-                props: {
-                  style: {
-                    fontSize: 24,
-                    fontWeight: 600,
-                    letterSpacing: '0.16em',
-                    textTransform: 'uppercase',
-                    color: ACENTO,
-                    marginBottom: 28,
-                  },
-                  children: eyebrow,
-                },
-              },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: 56,
+          padding: '0 32px',
+          backgroundColor: BARRA,
+          borderBottom: `1px solid ${BORDA}`,
+        },
+        [
+          div({ display: 'flex', alignItems: 'center', fontSize: 20 }, [
+            div({ display: 'flex', color: SUAVE }, 'felipe@log'),
+            div({ display: 'flex', color: FRACO }, ':'),
+            div({ display: 'flex', color: ACENTO }, rodape ?? '~'),
+          ]),
+          quadros(),
+        ]
+      ),
+
+      // corpo: comando e saída
+      div(
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          flexGrow: 1,
+          padding: '48px 64px 40px',
+        },
+        [
+          div({ display: 'flex', flexDirection: 'column' }, [
+            div(
+              { display: 'flex', fontSize: 24, marginBottom: 32 },
+              [
+                div({ display: 'flex', color: ACENTO, marginRight: 12 }, '$'),
+                div({ display: 'flex', color: FRACO }, comando),
+              ]
+            ),
+            div(
               {
-                type: 'div',
-                props: {
-                  style: {
-                    fontSize: tamanhoDoTitulo(titulo),
-                    fontWeight: 700,
-                    lineHeight: 1.14,
-                    letterSpacing: '-0.02em',
-                    color: TEXTO,
-                  },
-                  children: recortar(titulo, 110),
-                },
+                display: 'flex',
+                fontSize: tamanhoDoTitulo(titulo),
+                fontWeight: 700,
+                lineHeight: 1.2,
+                letterSpacing: '-0.02em',
+                color: TEXTO,
               },
-              descricao && {
-                type: 'div',
-                props: {
-                  style: {
-                    fontSize: 28,
-                    lineHeight: 1.45,
+              recortar(titulo, 96)
+            ),
+            descricao
+              ? div(
+                  {
+                    display: 'flex',
+                    fontSize: 24,
+                    lineHeight: 1.5,
                     color: SUAVE,
                     marginTop: 28,
                   },
-                  children: recortar(descricao, 130),
-                },
-              },
-            ].filter(Boolean),
-          },
-        },
-        {
-          type: 'div',
-          props: {
-            style: {
+                  recortar(descricao, 116)
+                )
+              : div({ display: 'flex' }, ''),
+          ]),
+
+          // rodapé: a marca e o endereço, separados por uma régua
+          div(
+            {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               borderTop: `1px solid ${BORDA}`,
-              paddingTop: 28,
+              paddingTop: 24,
             },
-            children: [
-              {
-                type: 'div',
-                props: {
-                  style: { display: 'flex', alignItems: 'center' },
-                  children: [
-                    {
-                      type: 'div',
-                      props: {
-                        style: {
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: 44,
-                          height: 44,
-                          border: `1px solid ${ACENTO}`,
-                          borderRadius: 8,
-                          color: ACENTO,
-                          fontSize: 18,
-                          fontWeight: 600,
-                          marginRight: 18,
-                        },
-                        children: 'FN',
-                      },
-                    },
-                    {
-                      type: 'div',
-                      props: {
-                        style: { fontSize: 26, fontWeight: 600, color: TEXTO },
-                        children: 'Felipe Novais',
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                type: 'div',
-                props: {
-                  style: { fontSize: 22, color: FRACO },
-                  children: rodape ?? 'fsnovais.github.io',
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-  };
+            [
+              div({ display: 'flex', alignItems: 'center' }, [
+                div(
+                  {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 40,
+                    height: 40,
+                    border: `1px solid ${ACENTO}`,
+                    color: ACENTO,
+                    fontSize: 18,
+                    fontWeight: 700,
+                    marginRight: 16,
+                  },
+                  '>_'
+                ),
+                div(
+                  { display: 'flex', fontSize: 24, fontWeight: 500, color: TEXTO },
+                  'Felipe.log'
+                ),
+              ]),
+              div({ display: 'flex', fontSize: 20, color: FRACO }, 'fsnovais.github.io'),
+            ]
+          ),
+        ]
+      ),
+    ]
+  );
 }
 
 /** Devolve o PNG do cartão pronto para virar resposta de endpoint. */

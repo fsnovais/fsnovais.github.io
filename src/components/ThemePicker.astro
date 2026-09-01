@@ -1,0 +1,263 @@
+---
+/*
+  Seletor de temas de terminal. Seis temas reais, cada um com amostra de cor.
+  A escolha vale para sempre (localStorage) e é aplicada antes da primeira
+  pintura, no script do BaseLayout: nunca há lampejo de tema errado.
+*/
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+const t = useTranslations(getLangFromUrl(Astro.url));
+
+// nome técnico de propósito: é assim que temas de terminal se chamam.
+// bg e ac são só a amostra visual do menu, não valem como fonte de verdade.
+const temas = [
+  { id: 'amber', nome: 'amber', bg: '#0b0e12', ac: '#ffb043' },
+  { id: 'green', nome: 'green', bg: '#040806', ac: '#3dff86' },
+  { id: 'gruvbox', nome: 'gruvbox', bg: '#1d2021', ac: '#fabd2f' },
+  { id: 'nord', nome: 'nord', bg: '#2e3440', ac: '#88c0d0' },
+  { id: 'tokyo', nome: 'tokyo', bg: '#16161e', ac: '#7aa2f7' },
+  { id: 'paper', nome: 'paper', bg: '#f3f0e7', ac: '#9a4f04' },
+];
+---
+
+<div class="picker" data-picker>
+  <button
+    class="trigger"
+    type="button"
+    data-picker-trigger
+    aria-expanded="false"
+    aria-haspopup="listbox"
+    title={t('theme.open')}
+  >
+    <span class="swatch" data-picker-swatch aria-hidden="true"></span>
+    <span class="nome" data-picker-name>amber</span>
+    <span class="seta" aria-hidden="true">▴</span>
+    <span class="visually-hidden">{t('theme.open')}</span>
+  </button>
+
+  <ul class="menu" data-picker-menu role="listbox" aria-label={t('theme.group')} hidden>
+    {
+      temas.map((tema) => (
+        <li role="none">
+          <button
+            class="opcao"
+            type="button"
+            role="option"
+            aria-selected="false"
+            data-tema={tema.id}
+          >
+            <span class="marca" aria-hidden="true">›</span>
+            <span
+              class="swatch"
+              aria-hidden="true"
+              style={`--sw-bg:${tema.bg};--sw-ac:${tema.ac}`}
+            />
+            <span class="opcao-nome">{tema.nome}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .picker {
+    position: relative;
+  }
+
+  .trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 24px;
+    padding: 0 var(--space-2);
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+
+  .trigger:hover,
+  .trigger[aria-expanded='true'] {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .seta {
+    font-size: 0.6rem;
+    opacity: 0.7;
+  }
+
+  .swatch {
+    width: 10px;
+    height: 10px;
+    flex: none;
+    background: var(--sw-bg, var(--bg));
+    border: 1px solid var(--sw-ac, var(--accent));
+    box-shadow: inset 0 -3px 0 var(--sw-ac, var(--accent));
+  }
+
+  /* menu sobe: a barra de status vive no rodapé da tela */
+  .menu {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    z-index: 60;
+    min-width: 11rem;
+    margin: 0;
+    padding: var(--space-1);
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--border-ui);
+  }
+
+  .menu[hidden] {
+    display: none;
+  }
+
+  .opcao {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-height: 24px;
+    padding: var(--space-1) var(--space-2);
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .marca {
+    width: 1ch;
+    color: transparent;
+  }
+
+  .opcao[aria-selected='true'] .marca {
+    color: var(--accent);
+  }
+
+  .opcao[aria-selected='true'] .opcao-nome {
+    color: var(--text);
+  }
+
+  .opcao:hover,
+  .opcao:focus-visible {
+    background: var(--accent);
+    color: var(--on-accent);
+    outline: none;
+  }
+
+  .opcao:hover .marca,
+  .opcao:focus-visible .marca,
+  .opcao:hover .opcao-nome,
+  .opcao:focus-visible .opcao-nome {
+    color: var(--on-accent);
+  }
+</style>
+
+<script>
+  const TEMAS = ['amber', 'green', 'gruvbox', 'nord', 'tokyo', 'paper'];
+  // cor da barra do navegador em cada tema, para o mobile combinar com a página
+  const CHROME = {
+    amber: '#0b0e12',
+    green: '#040806',
+    gruvbox: '#1d2021',
+    nord: '#2e3440',
+    tokyo: '#16161e',
+    paper: '#f3f0e7',
+  };
+
+  const raiz = document.documentElement;
+  const caixa = document.querySelector('[data-picker]');
+  const gatilho = document.querySelector('[data-picker-trigger]');
+  const menu = document.querySelector('[data-picker-menu]');
+  const nome = document.querySelector('[data-picker-name]');
+  const amostra = document.querySelector('[data-picker-swatch]');
+  const opcoes = [...document.querySelectorAll('[data-tema]')];
+
+  function temaAtual() {
+    const escolhido = raiz.getAttribute('data-theme');
+    if (TEMAS.includes(escolhido)) return escolhido;
+    // sem escolha: segue o sistema, que o CSS resolve como amber ou paper
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'paper' : 'amber';
+  }
+
+  function refletir() {
+    const atual = temaAtual();
+    if (nome) nome.textContent = atual;
+    opcoes.forEach((o) =>
+      o.setAttribute('aria-selected', String(o.dataset.tema === atual))
+    );
+    // a amostra do gatilho lê as cores vivas do tema aplicado
+    if (amostra) {
+      amostra.style.setProperty('--sw-bg', 'var(--bg)');
+      amostra.style.setProperty('--sw-ac', 'var(--accent)');
+    }
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((m) => m.setAttribute('content', CHROME[atual] ?? CHROME.amber));
+  }
+
+  function abrir() {
+    menu?.removeAttribute('hidden');
+    gatilho?.setAttribute('aria-expanded', 'true');
+    opcoes.find((o) => o.getAttribute('aria-selected') === 'true')?.focus();
+  }
+
+  function fechar(devolverFoco = true) {
+    menu?.setAttribute('hidden', '');
+    gatilho?.setAttribute('aria-expanded', 'false');
+    if (devolverFoco) gatilho?.focus();
+  }
+
+  gatilho?.addEventListener('click', () => {
+    if (menu?.hasAttribute('hidden')) abrir();
+    else fechar();
+  });
+
+  opcoes.forEach((opcao, i) => {
+    opcao.addEventListener('click', () => {
+      const escolhido = opcao.dataset.tema;
+      raiz.setAttribute('data-theme', escolhido);
+      try {
+        localStorage.setItem('tema', escolhido);
+      } catch {
+        // navegação privada: o tema vale só para esta visita
+      }
+      refletir();
+      fechar();
+    });
+
+    // setas percorrem a lista, como num menu de terminal
+    opcao.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const passo = e.key === 'ArrowDown' ? 1 : -1;
+        opcoes[(i + passo + opcoes.length) % opcoes.length].focus();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        fechar();
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!caixa?.contains(e.target) && !menu?.hasAttribute('hidden')) fechar(false);
+  });
+
+  // quem nunca escolheu acompanha a mudança do sistema em tempo real
+  window
+    .matchMedia('(prefers-color-scheme: light)')
+    .addEventListener('change', () => {
+      if (!raiz.hasAttribute('data-theme')) refletir();
+    });
+
+  refletir();
+</script>

@@ -1,54 +1,49 @@
 /*
-  Sistema de design: escuro técnico, sem gradiente.
-  Fundo quase preto com viés frio, um único acento âmbar, monoespaçado para dados.
-  Toda cor e espaçamento do site sai daqui.
+  Sistema de design: terminal.
+
+  A interface inteira é monoespaçada e desenhada como uma sessão de terminal,
+  com moldura de janela, barra de status e painéis de borda simples. Só o corpo
+  dos textos longos foge do mono: artigo comprido em monoespaçado cansa a vista,
+  e o site existe para ser lido.
+
+  Nada de raio de canto, nada de sombra, nada de gradiente: um terminal desenha
+  em células retangulares, e o site respeita isso.
+
+  Seis temas, todos de terminal de verdade. Cada um define o mesmo conjunto de
+  variáveis; nenhum componente conhece cor fixa. O contraste de todo par
+  texto/fundo foi medido: mínimo 4.5:1 (WCAG AA), e as bordas de controle usam
+  --border-ui, medida em pelo menos 3:1.
 */
 
 :root {
-  /* ---------- superfícies ---------- */
-  --bg: #0c0f13;
-  --bg-alt: #101419;
-  --surface: #151a21;
-  --surface-hover: #1b222b;
-  --border: #232b35;
-  --border-strong: #33404e;
-
-  /* ---------- texto ---------- */
-  --text: #e7ecf2;
-  --text-muted: #9aa7b6;
-  --text-faint: #7d8ca5;
-
-  /* ---------- acento único ---------- */
-  --accent: #e8b04b;
-  --accent-soft: #f2c876;
-  --accent-dim: #8a6a2c;
-  --accent-wash: rgba(232, 176, 75, 0.1);
-  --on-accent: #0c0f13;
-
-  /* cor de apoio, só para links dentro de texto corrido */
-  --link: #8fb4d9;
-
-  /* ---------- semântica de formulário ---------- */
-  --ok: #6ec49a;
-  --error: #e58b7b;
-
   /* ---------- tipografia ---------- */
-  --font-display: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-  --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* interface, títulos, dados, navegação: tudo mono */
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace,
+    'SFMono-Regular', 'IBM Plex Mono', Menlo, Consolas, monospace;
+  /* só o corpo de texto longo, para leitura confortável */
+  --font-prose: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* apelidos: qualquer componente antigo continua funcionando */
+  --font-display: var(--font-mono);
+  --font-body: var(--font-mono);
 
+  --step--2: 0.6875rem;
   --step--1: 0.8125rem;
-  --step-0: 1rem;
-  --step-1: 1.125rem;
-  --step-2: clamp(1.3rem, 0.9rem + 1.2vw, 1.6rem);
-  --step-3: clamp(1.7rem, 1.1rem + 2.2vw, 2.4rem);
-  --step-4: clamp(2.3rem, 1.2rem + 4.4vw, 3.9rem);
+  --step-0: 0.9375rem;
+  --step-1: 1.0625rem;
+  --step-2: clamp(1.15rem, 0.98rem + 0.7vw, 1.45rem);
+  --step-3: clamp(1.4rem, 1.05rem + 1.5vw, 2.05rem);
+  --step-4: clamp(1.75rem, 1.05rem + 3.1vw, 3rem);
 
-  --leading-tight: 1.12;
-  --leading-snug: 1.35;
-  --leading-body: 1.65;
+  /* mono é largo: entrelinha um pouco menor do que num sans equivalente */
+  --leading-tight: 1.15;
+  --leading-snug: 1.4;
+  --leading-body: 1.6;
+  --leading-prose: 1.72;
 
-  /* ---------- espaçamento ---------- */
+  --track-tight: -0.02em;
+  --track-wide: 0.14em;
+
+  /* ---------- espaçamento, grade de 8 ---------- */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -57,72 +52,268 @@
   --space-6: 2rem;
   --space-7: 3rem;
   --space-8: 4rem;
-  --space-9: 6rem;
+  --space-9: 5.5rem;
 
   /* ---------- layout ---------- */
-  --measure: 68ch;
-  --container: 68rem;
-  --container-narrow: 46rem;
-  --radius: 6px;
-  --radius-lg: 10px;
+  --measure: 74ch;        /* medida do mono: conta caractere, não palavra */
+  --measure-prose: 68ch;  /* medida do sans, para o corpo dos artigos */
+  --container: 74rem;
+  --container-narrow: 48rem;
 
-  --header-h: 68px;
+  /* terminal não tem canto arredondado */
+  --radius: 0px;
+  --radius-lg: 0px;
+
+  --header-h: 40px;   /* barra de título da janela */
+  --tabs-h: 34px;     /* fila de abas, logo abaixo */
+  --status-h: 30px;   /* barra de status, fixa embaixo */
+  --chrome-h: calc(var(--header-h) + var(--tabs-h));
 
   /* ---------- movimento ---------- */
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0.6, 0.35, 1);
+  --dur: 120ms;
+
+  /* ---------- CRT ---------- */
+  /* ligado por padrão, discreto; a barra de status desliga */
+  --scan-opacity: 0.05;
+  --scan-size: 3px;
+  --glow: 0 0 12px color-mix(in srgb, var(--accent) 34%, transparent);
+  --glow-soft: 0 0 18px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+:root[data-crt='off'] {
+  --scan-opacity: 0;
+  --glow: none;
+  --glow-soft: none;
+}
+
+/* =========================================================================
+   TEMAS
+   Cada bloco define o mesmo contrato de variáveis. Trocar de tema não muda
+   nenhuma medida, só cor: o layout fica idêntico em todos.
+   ========================================================================= */
+
+/* ---------- amber phosphor: o padrão ---------- */
+:root,
+:root[data-theme='amber'] {
+  --bg: #0b0e12;
+  --bg-alt: #101419;
+  --surface: #141920;
+  --surface-hover: #1b222b;
+  --border: #232b35;
+  --border-strong: #3a4553;
+  --border-ui: #5d6b7d;
+
+  --text: #e6ecf3;
+  --text-muted: #a2b0c0;
+  --text-faint: #8494a6;
+
+  --accent: #ffb043;
+  --accent-soft: #ffc978;
+  --accent-dim: #8a6a2c;
+  --accent-wash: rgba(255, 176, 67, 0.1);
+  --on-accent: #0b0e12;
+
+  --link: #7fb2e3;
+  --ok: #5fd39a;
+  --error: #ff8a70;
+
+  --sel-bg: #ffb043;
+  --sel-fg: #0b0e12;
+
+  color-scheme: dark;
+}
+
+/* ---------- green phosphor: VT/3270 ---------- */
+:root[data-theme='green'] {
+  --bg: #040806;
+  --bg-alt: #08110b;
+  --surface: #0b1710;
+  --surface-hover: #10241a;
+  --border: #16301f;
+  --border-strong: #265034;
+  --border-ui: #3f7a55;
+
+  --text: #c9f7d8;
+  --text-muted: #8fd6a8;
+  --text-faint: #71b98c;
+
+  --accent: #3dff86;
+  --accent-soft: #8bffb8;
+  --accent-dim: #1f8047;
+  --accent-wash: rgba(61, 255, 134, 0.09);
+  --on-accent: #040806;
+
+  --link: #7fe8c8;
+  --ok: #3dff86;
+  --error: #ff8f7a;
+
+  --sel-bg: #3dff86;
+  --sel-fg: #040806;
+
+  color-scheme: dark;
+}
+
+/* ---------- gruvbox dark ---------- */
+:root[data-theme='gruvbox'] {
+  --bg: #1d2021;
+  --bg-alt: #282828;
+  --surface: #32302f;
+  --surface-hover: #3c3836;
+  --border: #3c3836;
+  --border-strong: #504945;
+  --border-ui: #7c6f64;
+
+  --text: #ebdbb2;
+  --text-muted: #bdae93;
+  --text-faint: #a89984;
+
+  --accent: #fabd2f;
+  --accent-soft: #fbd980;
+  --accent-dim: #b57614;
+  --accent-wash: rgba(250, 189, 47, 0.1);
+  --on-accent: #1d2021;
+
+  --link: #83a598;
+  --ok: #b8bb26;
+  --error: #fb4934;
+
+  --sel-bg: #fabd2f;
+  --sel-fg: #1d2021;
+
+  color-scheme: dark;
+}
+
+/* ---------- nord ---------- */
+:root[data-theme='nord'] {
+  --bg: #2e3440;
+  --bg-alt: #292f3a;
+  --surface: #3b4252;
+  --surface-hover: #434c5e;
+  --border: #434c5e;
+  --border-strong: #5c6b85;
+  --border-ui: #7b88a1;
+
+  --text: #eceff4;
+  --text-muted: #d8dee9;
+  --text-faint: #aeb8c8;
+
+  --accent: #88c0d0;
+  --accent-soft: #a9d4e0;
+  --accent-dim: #5e81ac;
+  --accent-wash: rgba(136, 192, 208, 0.12);
+  --on-accent: #2e3440;
+
+  --link: #a3c7e0;
+  --ok: #a3be8c;
+  --error: #d08a92;
+
+  --sel-bg: #88c0d0;
+  --sel-fg: #2e3440;
+
+  color-scheme: dark;
+}
+
+/* ---------- tokyo night ---------- */
+:root[data-theme='tokyo'] {
+  --bg: #16161e;
+  --bg-alt: #1a1b26;
+  --surface: #1f2335;
+  --surface-hover: #292e42;
+  --border: #2f334d;
+  --border-strong: #414868;
+  --border-ui: #646e9a;
+
+  --text: #c8d3f5;
+  --text-muted: #a1aad6;
+  --text-faint: #8891b8;
+
+  --accent: #7aa2f7;
+  --accent-soft: #a4bff9;
+  --accent-dim: #3d59a1;
+  --accent-wash: rgba(122, 162, 247, 0.12);
+  --on-accent: #16161e;
+
+  --link: #7dcfff;
+  --ok: #9ece6a;
+  --error: #f7768e;
+
+  --sel-bg: #7aa2f7;
+  --sel-fg: #16161e;
+
+  color-scheme: dark;
+}
+
+/* ---------- paper: claro, papel de impressora matricial ---------- */
+:root[data-theme='paper'] {
+  --bg: #f3f0e7;
+  --bg-alt: #e8e4d8;
+  --surface: #fffdf6;
+  --surface-hover: #f0ece0;
+  --border: #d6cfbe;
+  --border-strong: #a9a08a;
+  --border-ui: #8a8271;
+
+  --text: #1b1917;
+  --text-muted: #4a453c;
+  --text-faint: #635c4e;
+
+  --accent: #9a4f04;
+  --accent-soft: #7c3f03;
+  --accent-dim: #c79a5e;
+  --accent-wash: rgba(154, 79, 4, 0.08);
+  --on-accent: #fffdf6;
+
+  --link: #14508a;
+  --ok: #2a6b3f;
+  --error: #a32c1c;
+
+  --sel-bg: #9a4f04;
+  --sel-fg: #fffdf6;
+
+  color-scheme: light;
+
+  /* fósforo não brilha em papel */
+  --scan-opacity: 0;
+  --glow: none;
+  --glow-soft: none;
 }
 
 /*
-  O site é escuro por decisão de projeto, não por falta de tema claro.
-  Quem prefere claro no sistema recebe um tema claro completo, com os mesmos tokens.
+  Quem nunca escolheu tema e usa o sistema no claro recebe o tema paper.
+  Quem escolheu qualquer tema explicitamente manda, e este bloco não vale.
 */
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme='dark']) {
-    --bg: #f7f8fa;
-    --bg-alt: #eef1f5;
-    --surface: #ffffff;
-    --surface-hover: #f0f3f7;
-    --border: #dde3ea;
-    --border-strong: #c2cbd6;
+  :root:not([data-theme]) {
+    --bg: #f3f0e7;
+    --bg-alt: #e8e4d8;
+    --surface: #fffdf6;
+    --surface-hover: #f0ece0;
+    --border: #d6cfbe;
+    --border-strong: #a9a08a;
+    --border-ui: #8a8271;
 
-    --text: #131820;
-    --text-muted: #4d5a6a;
-    --text-faint: #606d77;
+    --text: #1b1917;
+    --text-muted: #4a453c;
+    --text-faint: #635c4e;
 
-    --accent: #8a5f0a;
-    --accent-soft: #b8842a;
-    --accent-dim: #d8b878;
-    --accent-wash: rgba(146, 101, 14, 0.08);
-    --on-accent: #ffffff;
+    --accent: #9a4f04;
+    --accent-soft: #7c3f03;
+    --accent-dim: #c79a5e;
+    --accent-wash: rgba(154, 79, 4, 0.08);
+    --on-accent: #fffdf6;
 
-    --link: #2c5f92;
+    --link: #14508a;
+    --ok: #2a6b3f;
+    --error: #a32c1c;
 
-    --ok: #217a4f;
-    --error: #a8412c;
+    --sel-bg: #9a4f04;
+    --sel-fg: #fffdf6;
+
+    color-scheme: light;
+
+    --scan-opacity: 0;
+    --glow: none;
+    --glow-soft: none;
   }
-}
-
-:root[data-theme='light'] {
-  --bg: #f7f8fa;
-  --bg-alt: #eef1f5;
-  --surface: #ffffff;
-  --surface-hover: #f0f3f7;
-  --border: #dde3ea;
-  --border-strong: #c2cbd6;
-
-  --text: #131820;
-  --text-muted: #4d5a6a;
-  --text-faint: #606d77;
-
-  --accent: #8a5f0a;
-  --accent-soft: #b8842a;
-  --accent-dim: #d8b878;
-  --accent-wash: rgba(146, 101, 14, 0.08);
-  --on-accent: #ffffff;
-
-  --link: #2c5f92;
-
-  --ok: #217a4f;
-  --error: #a8412c;
 }

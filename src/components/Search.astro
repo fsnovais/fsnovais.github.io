@@ -1,4 +1,8 @@
 ---
+/*
+  Busca no estilo fzf: prompt no topo, resultados abaixo, linha de status com a
+  contagem no rodapé da caixa. Índice estático, sem biblioteca.
+*/
 import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
 
 const lang = getLangFromUrl(Astro.url);
@@ -18,24 +22,18 @@ const strings = {
 
 <button
   type="button"
-  class="search-trigger"
+  class="gatilho"
   data-search-open
   aria-haspopup="dialog"
   title={t('search.buttonAria')}
 >
-  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <circle cx="10.5" cy="10.5" r="6.5"></circle>
-    <path d="M20 20l-4.6-4.6"></path>
-  </svg>
+  <span aria-hidden="true">/</span>
   <span class="visually-hidden">{t('search.buttonAria')}</span>
 </button>
 
-<dialog class="search-dialog" data-search-dialog aria-label={t('search.buttonAria')}>
-  <div class="search-box">
-    <svg class="ico search-box-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="10.5" cy="10.5" r="6.5"></circle>
-      <path d="M20 20l-4.6-4.6"></path>
-    </svg>
+<dialog class="caixa" data-search-dialog aria-label={t('search.buttonAria')}>
+  <div class="linha-prompt">
+    <span class="prompt" aria-hidden="true">&gt;</span>
     <input
       type="search"
       data-search-input
@@ -45,211 +43,220 @@ const strings = {
       autocapitalize="off"
       spellcheck="false"
     />
-    <button type="button" class="search-close" data-search-close>
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M5 5l14 14M19 5L5 19"></path>
-      </svg>
+    <button type="button" class="fechar" data-search-close>
+      <span aria-hidden="true">esc</span>
       <span class="visually-hidden">{t('search.close')}</span>
     </button>
   </div>
 
-  <p class="search-hint" data-search-hint>{t('search.hint')}</p>
-  <p class="search-empty" data-search-empty hidden></p>
-  <ul class="search-results" data-search-results></ul>
+  <ul class="resultados" data-search-results></ul>
+  <p class="vazio" data-search-empty hidden></p>
+
+  <p class="rodape-caixa">
+    <span class="contagem tabular" data-search-count>0/0</span>
+    <span class="dica" data-search-hint>{t('search.hint')}</span>
+  </p>
 </dialog>
 
 <style>
-  .search-trigger {
+  .gatilho {
     display: inline-grid;
     place-items: center;
-    width: 34px;
-    height: 34px;
+    width: 24px;
+    height: 24px;
     padding: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border: 1px solid var(--border-ui);
     background: transparent;
     color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1;
     cursor: pointer;
-    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
   }
 
-  .search-trigger:hover {
-    color: var(--accent);
-    border-color: var(--border-strong);
+  .gatilho:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
   }
 
-  .ico {
-    width: 17px;
-    height: 17px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  /* o <dialog> cuida do overlay e do foco; só o miolo é estilizado aqui */
-  .search-dialog {
-    margin: 10vh auto auto;
+  .caixa {
+    margin: 8vh auto auto;
     padding: 0;
-    width: min(92vw, 38rem);
-    max-height: 74vh;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    width: min(94vw, 42rem);
+    max-height: 76vh;
+    border: 1px solid var(--border-ui);
     background: var(--surface);
     color: var(--text);
+    font-family: var(--font-mono);
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
 
-  .search-dialog:not([open]) {
+  .caixa:not([open]) {
     display: none;
   }
 
-  .search-dialog::backdrop {
-    background: color-mix(in srgb, var(--bg) 65%, transparent);
-    backdrop-filter: blur(2px);
+  .caixa::backdrop {
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
   }
 
-  .search-box {
+  .linha-prompt {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-4) var(--space-4);
+    padding: var(--space-3) var(--space-4);
     border-bottom: 1px solid var(--border);
+    background: var(--bg-alt);
   }
 
-  .search-box-ico {
-    flex: none;
-    color: var(--text-faint);
+  .linha-prompt .prompt {
+    font-weight: 700;
   }
 
-  .search-box input {
+  .linha-prompt input {
     flex: 1;
     min-width: 0;
+    padding: 0;
     border: 0;
     background: transparent;
     color: var(--text);
     font-size: var(--step-1);
   }
 
-  .search-box input::placeholder {
-    color: var(--text-faint);
-  }
-
-  .search-box input:focus {
+  .linha-prompt input:focus {
     outline: none;
+    background: transparent;
+    border: 0;
   }
 
-  .search-box input::-webkit-search-cancel-button {
+  .linha-prompt input::-webkit-search-cancel-button {
     display: none;
   }
 
-  .search-close {
+  .fechar {
     flex: none;
-    display: inline-grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius);
+    padding: 2px var(--space-2);
+    border: 1px solid var(--border);
     background: transparent;
     color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
     cursor: pointer;
   }
 
-  .search-close:hover {
-    color: var(--accent);
+  .fechar:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
   }
 
-  .search-hint {
-    padding: var(--space-4);
-    color: var(--text-faint);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-  }
-
-  .search-empty {
-    padding: var(--space-4);
-    color: var(--text-muted);
-  }
-
-  .search-results {
+  .resultados {
     list-style: none;
     margin: 0;
-    padding: var(--space-2);
+    padding: 0;
     overflow-y: auto;
+    flex: 1;
   }
 
-  /* conteúdo montado por JS a partir do índice: precisa de seletor global,
-     o escopo automático do Astro não alcança nós criados fora do template */
-  .search-results :global(li + li) {
-    border-top: 1px solid var(--border);
+  .resultados:empty {
+    display: none;
   }
 
-  .search-results :global(a) {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: var(--space-3);
-    border-radius: var(--radius);
+  .vazio {
+    padding: var(--space-4);
+    color: var(--text-muted);
+    font-size: var(--step--1);
+  }
+
+  /* o conteúdo é montado por JS: precisa de :global para o Astro não podar */
+  .resultados :global(a) {
+    display: grid;
+    grid-template-columns: 1.5ch auto 1fr;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-4);
     color: inherit;
     text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
   }
 
-  .search-results :global(a:hover),
-  .search-results :global(li.is-active a) {
-    background: var(--surface-hover);
+  /* a marca ▌ acende só na linha ativa, como o cursor de uma lista de terminal */
+  .resultados :global(.marca) {
+    color: transparent;
   }
 
-  .search-results :global(.search-meta) {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-faint);
+  .resultados :global(li.is-active a),
+  .resultados :global(a:hover) {
+    background: var(--accent-wash);
   }
 
-  .search-results :global(.search-meta .secao) {
+  .resultados :global(li.is-active .marca),
+  .resultados :global(a:hover .marca) {
     color: var(--accent);
   }
 
-  .search-results :global(.search-meta .selo) {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0 var(--space-2);
-    text-transform: none;
-    letter-spacing: 0;
+  .resultados :global(.secao) {
+    font-size: var(--step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
   }
 
-  .search-results :global(.titulo) {
-    font-weight: 600;
+  .resultados :global(.titulo) {
+    font-size: var(--step-0);
     color: var(--text);
-  }
-
-  .search-results :global(.descricao) {
-    font-size: var(--step--1);
-    color: var(--text-muted);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .search-results :global(mark) {
-    background: var(--accent-wash);
+  .resultados :global(.detalhe) {
+    grid-column: 3;
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+
+  .resultados :global(.selo) {
+    border: 1px solid var(--border);
+    padding: 0 var(--space-1);
+  }
+
+  .resultados :global(mark) {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .rodape-caixa {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-4);
+    border-top: 1px solid var(--border);
+    background: var(--bg-alt);
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+
+  .contagem {
     color: var(--accent);
-    border-radius: 2px;
+  }
+
+  .dica {
+    margin-left: auto;
   }
 
   @media (max-width: 40rem) {
-    .search-dialog {
+    .caixa {
       margin-top: 4vh;
-      max-height: 84vh;
+      max-height: 86vh;
+    }
+    .dica {
+      display: none;
     }
   }
 </style>
@@ -261,7 +268,7 @@ const strings = {
   const closeBtn = document.querySelector('[data-search-close]');
   const resultsEl = document.querySelector('[data-search-results]');
   const emptyEl = document.querySelector('[data-search-empty]');
-  const hintEl = document.querySelector('[data-search-hint]');
+  const countEl = document.querySelector('[data-search-count]');
 
   if (openBtn && dialog && input && resultsEl && typeof dialog.showModal === 'function') {
     let indice = null;
@@ -305,8 +312,6 @@ const strings = {
       return 0;
     }
 
-    // realce aproximado: a versão sem acento tem, na prática, o mesmo
-    // comprimento da original, então os índices batem para o nosso uso
     function destacar(texto, consulta) {
       if (!consulta) return texto;
       const alvo = normalizar(texto);
@@ -321,9 +326,14 @@ const strings = {
       );
     }
 
+    function atualizarContagem(total) {
+      if (countEl) countEl.textContent = `${total === 0 ? 0 : ativo + 1}/${total}`;
+    }
+
     function atualizarAtivo(itens) {
       itens.forEach((a, i) => a.closest('li').classList.toggle('is-active', i === ativo));
       itens[ativo]?.scrollIntoView({ block: 'nearest' });
+      atualizarContagem(itens.length);
     }
 
     function renderizar(itens, consulta, exibicao) {
@@ -332,19 +342,20 @@ const strings = {
 
       if (!exibicao) {
         emptyEl.hidden = true;
-        hintEl.hidden = false;
+        atualizarContagem(0);
         return;
       }
-      hintEl.hidden = true;
 
       if (itens.length === 0) {
         emptyEl.hidden = false;
         emptyEl.textContent = strings.empty.replace('{query}', exibicao);
+        atualizarContagem(0);
         return;
       }
       emptyEl.hidden = true;
 
-      itens.slice(0, 8).forEach((item) => {
+      const mostrados = itens.slice(0, 12);
+      mostrados.forEach((item) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.href = item.url;
@@ -355,14 +366,18 @@ const strings = {
           : '';
 
         a.innerHTML =
-          `<span class="search-meta"><span class="secao">${secaoTexto}</span>` +
-          `<time>${item.data}</time>${selo}</span>` +
+          `<span class="marca" aria-hidden="true">&#9612;</span>` +
+          `<span class="secao">${secaoTexto}</span>` +
           `<span class="titulo">${destacar(item.titulo, consulta)}</span>` +
-          `<span class="descricao">${item.descricao}</span>`;
+          `<span class="detalhe"><time>${item.data}</time>${selo}</span>`;
 
         li.appendChild(a);
         resultsEl.appendChild(li);
       });
+
+      // a primeira linha já vem marcada: ↵ abre o resultado mais provável
+      ativo = 0;
+      atualizarAtivo([...resultsEl.querySelectorAll('a')]);
     }
 
     async function executarBusca() {
@@ -396,7 +411,6 @@ const strings = {
     closeBtn?.addEventListener('click', () => dialog.close());
     dialog.addEventListener('close', () => openBtn.focus());
 
-    // clique fora do miolo (na área do <dialog>, que cobre a tela toda) fecha
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) dialog.close();
     });
@@ -409,11 +423,14 @@ const strings = {
     input.addEventListener('keydown', (e) => {
       const itens = [...resultsEl.querySelectorAll('a')];
       if (!itens.length) return;
-      if (e.key === 'ArrowDown') {
+      // ctrl+n e ctrl+p também andam na lista, como no fzf
+      const desce = e.key === 'ArrowDown' || (e.ctrlKey && e.key === 'n');
+      const sobe = e.key === 'ArrowUp' || (e.ctrlKey && e.key === 'p');
+      if (desce) {
         e.preventDefault();
         ativo = Math.min(ativo + 1, itens.length - 1);
         atualizarAtivo(itens);
-      } else if (e.key === 'ArrowUp') {
+      } else if (sobe) {
         e.preventDefault();
         ativo = Math.max(ativo - 1, 0);
         atualizarAtivo(itens);
@@ -426,7 +443,8 @@ const strings = {
     // atalho global: "/" ou cmd+k/ctrl+k abrem a busca de qualquer página
     document.addEventListener('keydown', (e) => {
       const emCampo = ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName);
-      const atalho = (e.key === '/' && !emCampo) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k');
+      const atalho =
+        (e.key === '/' && !emCampo) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k');
       if (atalho && !dialog.open) {
         e.preventDefault();
         abrir();

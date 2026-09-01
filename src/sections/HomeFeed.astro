@@ -1,5 +1,10 @@
 ---
-import { listarComTraducao, formatarData, dataIso } from '../lib/posts.js';
+/*
+  A home é a transcrição de uma sessão: uma sequência de comandos e saídas.
+  Como a moldura de janela já é o cabeçalho do site, aqui não há terminal
+  dentro de terminal; a página inteira é o terminal.
+*/
+import { listarComTraducao, dataIso } from '../lib/posts.js';
 import { site } from '../data/site.js';
 import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
 import { rota } from '../i18n/routes.js';
@@ -20,10 +25,7 @@ const recentes = [
   .sort((a, b) => b.post.data.date.getTime() - a.post.data.date.getTime())
   .slice(0, 6);
 
-// {devlog} e {contato} viram o endereço no idioma da página
-// pequena assinatura pessoal no topo: um terminal falso com o "usuário"
-// felipe@log, ecoando a marca (>_) e o nome do site. As frases trocam
-// sozinhas; sem JS ou com prefers-reduced-motion, a primeira já basta.
+// as frases trocam sozinhas; sem JS ou com prefers-reduced-motion, a primeira basta
 const whoamiLinhas = t('home.whoami.lines').split('|');
 
 const lede = t('home.lede')
@@ -32,9 +34,10 @@ const lede = t('home.lede')
   .replaceAll('{contato}', `${rota('sobre', lang)}#contato`);
 
 const atalhos = [
-  { titulo: t('nav.projects'), texto: t('home.projectsCard'), href: rota('projetos', lang) },
-  { titulo: t('nav.about'), texto: t('home.aboutCard'), href: rota('sobre', lang) },
+  { nome: 'projetos/', titulo: t('nav.projects'), texto: t('home.projectsCard'), href: rota('projetos', lang) },
+  { nome: 'sobre.md', titulo: t('nav.about'), texto: t('home.aboutCard'), href: rota('sobre', lang) },
   {
+    nome: 'contato.sh',
     titulo: t('home.contactLabel'),
     texto: t('home.contactCard'),
     href: `${rota('sobre', lang)}#contato`,
@@ -42,40 +45,36 @@ const atalhos = [
 ];
 ---
 
-<section class="intro">
-  <div class="container intro-inner">
-    <div class="titulo">
-      <h1>{site.brand}</h1>
-      <p class="assinatura">{site.name}</p>
-    </div>
-    <p class="lede" set:html={lede} />
+<section class="sessao">
+  <div class="container">
+    <p class="comando"><span class="prompt" aria-hidden="true">$</span> whoami</p>
 
-    <div class="whoami" data-whoami>
-      <p class="whoami-bar">
-        <span class="whoami-dot" aria-hidden="true"></span>
-        <span class="whoami-dot" aria-hidden="true"></span>
-        <span class="whoami-dot" aria-hidden="true"></span>
-        <span class="whoami-user">felipe@log</span>
-      </p>
-      <p class="whoami-line">
-        <span class="whoami-prompt" aria-hidden="true">~$</span> whoami
-      </p>
-      <p class="whoami-line whoami-output">
-        <span class="whoami-prompt" aria-hidden="true">&gt;</span>
-        <span data-whoami-text>{whoamiLinhas[0]}</span
-        ><span class="whoami-cursor" data-whoami-cursor aria-hidden="true"></span>
+    <div class="bloco-titulo">
+      <h1 class="phos">{site.brand}</h1>
+      <p class="assinatura">{site.name}</p>
+      <p class="rotativa">
+        <span class="seta" aria-hidden="true">&gt;</span>
+        <span data-whoami-text>{whoamiLinhas[0]}</span><span
+          class="cursor"
+          aria-hidden="true"></span>
       </p>
     </div>
+
+    <p class="comando"><span class="prompt" aria-hidden="true">$</span> cat README.md</p>
+    <p class="lede" set:html={lede} />
   </div>
 </section>
 
 <section class="section feed">
   <div class="container">
     <div class="feed-head">
-      <h2>{t('home.latest')}</h2>
+      <h2 class="comando">
+        <span class="prompt" aria-hidden="true">$</span> ls -lt ~/log{' '}
+        <span class="flag" aria-hidden="true">--limit {recentes.length}</span>
+      </h2>
       <p class="arquivos">
         <a href={rota('blog', lang)}>{t('home.allBlog')}</a>
-        <span aria-hidden="true">/</span>
+        <span aria-hidden="true">·</span>
         <a href={rota('devlog', lang)}>{t('home.allDevlog')}</a>
       </p>
     </div>
@@ -87,30 +86,27 @@ const atalhos = [
         <ul class="lista">
           {recentes.map(({ post, lang: langPost, traduzido, secao }) => (
             <li>
-              <article>
-                <p class="meta">
-                  <span class="secao">{t(`posts.section.${secao}`)}</span>
-                  <time datetime={dataIso(post.data.date)}>
-                    {formatarData(post.data.date, lang)}
-                  </time>
+              <a
+                class="entrada"
+                href={localizedPath(langPost, `/${secao}/${post.id}`)}
+                lang={traduzido ? undefined : langPost}
+              >
+                {/* data em ISO: numa listagem de terminal ela precisa alinhar
+                    em coluna e não depender do idioma */}
+                <time class="col-data tabular" datetime={dataIso(post.data.date)}>
+                  {dataIso(post.data.date).slice(0, 10)}
+                </time>
+                <span class="col-secao">{t(`posts.section.${secao}`)}</span>
+                <span class="col-titulo">
+                  {post.data.title}
                   {!traduzido && (
-                    <span class="so-idioma">
+                    <span class="selo">
                       {langPost === 'pt' ? t('posts.onlyPortuguese') : t('posts.onlyEnglish')}
                     </span>
                   )}
-                </p>
-                <h3>
-                  <a
-                    href={localizedPath(langPost, `/${secao}/${post.id}`)}
-                    lang={traduzido ? undefined : langPost}
-                  >
-                    {post.data.title}
-                  </a>
-                </h3>
-                <p class="resumo" lang={traduzido ? undefined : langPost}>
-                  {post.data.description}
-                </p>
-              </article>
+                </span>
+                <span class="col-resumo">{post.data.description}</span>
+              </a>
             </li>
           ))}
         </ul>
@@ -119,16 +115,20 @@ const atalhos = [
   </div>
 </section>
 
-<section class="section mais">
+<section class="section mais on-alt">
   <div class="container">
-    <h2 class="mais-titulo">{t('home.moreTitle')}</h2>
+    <h2 class="comando"><span class="prompt" aria-hidden="true">$</span> ls ~/</h2>
     <ul class="atalhos">
       {
         atalhos.map((a) => (
           <li>
-            <a href={a.href}>
+            <a class="panel" href={a.href}>
+              <span class="panel-title">{a.nome}</span>
               <span class="atalho-titulo">{a.titulo}</span>
               <span class="atalho-texto">{a.texto}</span>
+              <span class="atalho-seta" aria-hidden="true">
+                cd {a.nome} →
+              </span>
             </a>
           </li>
         ))
@@ -138,199 +138,112 @@ const atalhos = [
 </section>
 
 <style>
-  /* ---------- intro ---------- */
-  .intro {
-    padding-block: var(--space-9) var(--space-7);
+  /* ---------- sessão de abertura ---------- */
+  .sessao {
+    padding-block: var(--space-7) var(--space-6);
     border-bottom: 1px solid var(--border);
-    background-image: linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 72px 72px;
-    background-position: center;
-    position: relative;
   }
 
-  .intro::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      ellipse 70% 60% at 30% 45%,
-      var(--bg) 30%,
-      color-mix(in srgb, var(--bg) 55%, transparent) 100%
-    );
-    pointer-events: none;
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
   }
 
-  .intro-inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
+  .bloco-titulo {
+    padding: var(--space-2) 0 var(--space-6);
   }
 
-  .titulo {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .intro h1 {
+  .sessao h1 {
     font-size: var(--step-4);
-    line-height: 0.98;
+    line-height: 1;
+    letter-spacing: -0.045em;
   }
 
   .assinatura {
-    font-family: var(--font-mono);
+    margin-top: var(--space-2);
     font-size: var(--step--1);
-    letter-spacing: 0.14em;
+    letter-spacing: var(--track-wide);
     text-transform: uppercase;
     color: var(--text-faint);
   }
 
+  .rotativa {
+    margin-top: var(--space-4);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-size: var(--step-0);
+    color: var(--text);
+    min-height: 1.6em;
+  }
+
+  .rotativa .seta {
+    color: var(--accent);
+  }
+
+  .rotativa [data-whoami-text] {
+    transition: opacity 200ms var(--ease);
+  }
+
   .lede {
-    max-width: 58ch;
+    margin-top: var(--space-3);
+    max-width: 66ch;
+    font-family: var(--font-prose);
     font-size: var(--step-1);
+    line-height: var(--leading-prose);
     color: var(--text-muted);
   }
 
   .lede :global(a) {
     color: var(--text);
-    text-decoration-color: var(--accent-dim);
-    text-underline-offset: 0.2em;
+    text-decoration-color: var(--accent);
   }
 
   .lede :global(a:hover) {
-    color: var(--accent);
-  }
-
-  /* ---------- whoami: assinatura em forma de terminal ---------- */
-  .whoami {
-    margin-top: var(--space-2);
-    width: fit-content;
-    max-width: 100%;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    overflow: hidden;
-  }
-
-  .whoami-bar {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    background: var(--bg-alt);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .whoami-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border-strong);
-  }
-
-  .whoami-user {
-    margin-left: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--text-faint);
-  }
-
-  .whoami-line {
-    padding: 0 var(--space-4);
-    padding-top: var(--space-3);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--text-muted);
-  }
-
-  .whoami-line:last-child {
-    padding-bottom: var(--space-3);
-  }
-
-  .whoami-prompt {
-    color: var(--accent);
-  }
-
-  .whoami-output {
-    color: var(--text);
-    min-height: 1.2em;
-  }
-
-  .whoami-output [data-whoami-text] {
-    transition: opacity 220ms var(--ease);
-  }
-
-  .whoami-cursor {
-    display: inline-block;
-    width: 0.55ch;
-    height: 1em;
-    margin-left: 2px;
-    vertical-align: -0.15em;
     background: var(--accent);
-    animation: whoami-piscar 1s step-end infinite;
+    color: var(--on-accent);
+    text-decoration-color: transparent;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .whoami-cursor {
-      animation: none;
-    }
-  }
-
-  @keyframes whoami-piscar {
-    0%,
-    49% {
-      opacity: 1;
-    }
-    50%,
-    100% {
-      opacity: 0;
-    }
-  }
-
-  @media (max-width: 40rem) {
-    .whoami {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 40rem) {
-    .intro {
-      padding-block: var(--space-7);
-      background-size: 48px 48px;
-    }
-  }
-
-  /* ---------- feed ---------- */
+  /* ---------- feed em formato ls ---------- */
   .feed-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: var(--space-4);
     flex-wrap: wrap;
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-4);
   }
 
   .feed-head h2 {
-    font-size: var(--step-2);
+    font-size: var(--step--1);
+    font-weight: 400;
+  }
+
+  .flag {
+    color: var(--border-strong);
   }
 
   .arquivos {
     display: flex;
     gap: var(--space-3);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: var(--step--2);
   }
 
   .arquivos a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
     color: var(--text-faint);
     text-decoration: none;
+    border-bottom: 1px dotted var(--border-strong);
   }
 
   .arquivos a:hover {
-    color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+    border-bottom-color: transparent;
   }
 
   .arquivos span {
@@ -340,91 +253,110 @@ const atalhos = [
   .lista {
     list-style: none;
     padding: 0;
-  }
-
-  .lista li {
     border-top: 1px solid var(--border);
   }
 
-  .lista li:last-child {
+  .lista li {
     border-bottom: 1px solid var(--border);
   }
 
-  .lista article {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding-block: var(--space-5);
-    max-width: var(--measure);
+  /*
+    Cada post é uma linha de listagem: data, seção, nome, descrição.
+    A linha inteira é o alvo do clique, e não só o título.
+  */
+  .entrada {
+    display: grid;
+    grid-template-columns: 11ch 9ch 1fr;
+    gap: var(--space-1) var(--space-4);
+    padding: var(--space-3) var(--space-2);
+    text-decoration: none;
+    color: inherit;
+    transition: background var(--dur) var(--ease);
   }
 
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    font-family: var(--font-mono);
+  .entrada:hover {
+    background: var(--accent-wash);
+  }
+
+  .col-data {
     font-size: var(--step--1);
     color: var(--text-faint);
+    white-space: nowrap;
   }
 
-  .secao {
-    color: var(--accent);
+  .col-secao {
+    font-size: var(--step--2);
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: var(--accent);
+    align-self: center;
   }
 
-  .so-idioma {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0 var(--space-2);
-  }
-
-  .lista h3 {
-    font-size: var(--step-2);
+  .col-titulo {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: var(--step-1);
     font-weight: 600;
-  }
-
-  .lista h3 a {
     color: var(--text);
-    text-decoration: none;
+    letter-spacing: var(--track-tight);
   }
 
-  .lista h3 a:hover {
+  .entrada:hover .col-titulo {
     color: var(--accent);
   }
 
-  .resumo {
-    color: var(--text-muted);
+  .selo {
+    font-size: var(--step--2);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+    padding: 0 var(--space-1);
+  }
+
+  .col-resumo {
+    grid-column: 3;
+    max-width: 72ch;
+    font-family: var(--font-prose);
+    font-size: var(--step-0);
     line-height: var(--leading-snug);
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 46rem) {
+    .entrada {
+      grid-template-columns: auto 1fr;
+    }
+    .col-titulo,
+    .col-resumo {
+      grid-column: 1 / -1;
+    }
   }
 
   .vazio {
     color: var(--text-muted);
-    padding-block: var(--space-6);
-    border-top: 1px solid var(--border);
+    padding-block: var(--space-5);
+    border-block: 1px solid var(--border);
   }
 
-  /* ---------- atalhos ---------- */
+  /* ---------- atalhos em painéis ---------- */
   .mais {
     border-top: 1px solid var(--border);
     background: var(--bg-alt);
   }
 
-  .mais-titulo {
-    font-family: var(--font-mono);
+  .mais h2 {
     font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
+    font-weight: 400;
     margin-bottom: var(--space-5);
   }
 
   .atalhos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-5);
     list-style: none;
     padding: 0;
   }
@@ -434,23 +366,25 @@ const atalhos = [
     flex-direction: column;
     gap: var(--space-2);
     height: 100%;
-    padding: var(--space-5);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
     text-decoration: none;
+    /*
+      O painel fica transparente de propósito: o título encaixado na borda de
+      cima é desenhado sobre o fundo da seção, e qualquer fundo próprio aqui
+      criaria um degrau visível atrás dele.
+    */
+    background: transparent;
     transition: border-color var(--dur) var(--ease);
   }
 
   .atalhos a:hover {
-    border-color: var(--border-strong);
+    border-color: var(--accent);
   }
 
   .atalho-titulo {
-    font-family: var(--font-display);
     font-size: var(--step-1);
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text);
+    letter-spacing: var(--track-tight);
   }
 
   .atalhos a:hover .atalho-titulo {
@@ -458,15 +392,27 @@ const atalhos = [
   }
 
   .atalho-texto {
-    color: var(--text-muted);
-    font-size: var(--step--1);
+    flex-grow: 1;
+    font-family: var(--font-prose);
+    font-size: var(--step-0);
     line-height: var(--leading-snug);
+    color: var(--text-muted);
+  }
+
+  .atalho-seta {
+    margin-top: var(--space-2);
+    font-size: var(--step--2);
+    color: var(--text-faint);
+  }
+
+  .atalhos a:hover .atalho-seta {
+    color: var(--accent);
   }
 </style>
 
 <script define:vars={{ linhas: whoamiLinhas }}>
-  // troca a frase do "whoami" a cada alguns segundos, como se alguém tivesse
-  // digitado de novo. Quem pediu menos movimento na tela vê só a primeira.
+  // troca a frase do whoami a cada alguns segundos, como se alguém tivesse
+  // digitado o comando de novo. Quem pediu menos movimento vê só a primeira.
   const saida = document.querySelector('[data-whoami-text]');
   const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -478,7 +424,7 @@ const atalhos = [
       setTimeout(() => {
         saida.textContent = linhas[indice];
         saida.style.opacity = '1';
-      }, 220);
+      }, 200);
     }, 4200);
   }
 </script>

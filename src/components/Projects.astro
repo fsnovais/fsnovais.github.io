@@ -20,19 +20,23 @@ const counts = Object.fromEntries(
 <section class="section" id="projetos">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">{t('projects.eyebrow')}</p>
-      <Titulo>{t('projects.title')}</Titulo>
-      <p>{t('projects.intro')}</p>
+      <p class="comando">
+        <span class="prompt" aria-hidden="true">$</span> ls ~/projetos{' '}
+        <span class="contagem" aria-hidden="true">({projects.length})</span>
+      </p>
+      <Titulo class="phos">{t('projects.title')}</Titulo>
+      <p class="intro">{t('projects.intro')}</p>
     </div>
 
     <div class="filters" role="group" aria-label={t('projects.filterLabel')}>
+      <span class="filters-flag" aria-hidden="true">--filter</span>
       <button class="filter" type="button" data-filter="todos" aria-pressed="true">
-        {t('projects.all')} <span class="filter-count">{projects.length}</span>
+        {t('projects.all')} <span class="filter-count tabular">{projects.length}</span>
       </button>
       {
         categories.map((c) => (
           <button class="filter" type="button" data-filter={c.id} aria-pressed="false">
-            {t(`projects.cat.${c.id}`)} <span class="filter-count">{counts[c.id]}</span>
+            {t(`projects.cat.${c.id}`)} <span class="filter-count tabular">{counts[c.id]}</span>
           </button>
         ))
       }
@@ -51,6 +55,10 @@ const counts = Object.fromEntries(
         projects.map((p) => (
           <li class="project" data-category={p.category}>
             <a class="project-link" href={p.url} target="_blank" rel="noopener noreferrer">
+              <div class="project-bar">
+                <span class="project-cat">{t(`projects.cat.${p.category}`)}</span>
+                <span class="project-abrir" aria-hidden="true">open ↗</span>
+              </div>
               <div class="project-media">
                 {p.video ? (
                   <video
@@ -88,27 +96,56 @@ const counts = Object.fromEntries(
 </section>
 
 <style>
-  h1 {
-    font-size: var(--step-3);
+  .comando {
+    font-size: var(--step--1);
+    color: var(--text-faint);
   }
 
+  .contagem {
+    color: var(--border-strong);
+  }
+
+  h1,
+  h2 {
+    font-size: var(--step-3);
+    letter-spacing: -0.035em;
+  }
+
+  .intro {
+    font-family: var(--font-prose);
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
+    color: var(--text-muted);
+    max-width: 66ch;
+  }
+
+  /* filtros como bandeiras de comando, não como pílulas */
   .filters {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     gap: var(--space-2);
     margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filters-flag {
+    font-size: var(--step--2);
+    color: var(--border-strong);
+    margin-right: var(--space-1);
   }
 
   .filter {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--border);
-    border-radius: 999px;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--border-ui);
     background: transparent;
     color: var(--text-muted);
-    font-size: var(--step-0);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
     cursor: pointer;
     transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
       background var(--dur) var(--ease);
@@ -116,24 +153,24 @@ const counts = Object.fromEntries(
 
   .filter:hover {
     color: var(--text);
-    border-color: var(--border-strong);
+    border-color: var(--accent);
   }
 
   .filter[aria-pressed='true'] {
-    color: var(--accent);
+    background: var(--accent);
     border-color: var(--accent);
-    background: var(--accent-wash);
+    color: var(--on-accent);
+    font-weight: 600;
   }
 
   .filter-count {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: var(--step--2);
     color: var(--text-faint);
-    font-variant-numeric: tabular-nums;
   }
 
   .filter[aria-pressed='true'] .filter-count {
-    color: var(--accent);
+    color: var(--on-accent);
+    opacity: 0.75;
   }
 
   .project-grid {
@@ -154,17 +191,40 @@ const counts = Object.fromEntries(
     height: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
     color: inherit;
     text-decoration: none;
-    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+    transition: border-color var(--dur) var(--ease);
   }
 
   .project-link:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
+    border-color: var(--accent);
     color: inherit;
+  }
+
+  /* barra de título do card, no mesmo espírito da janela do site */
+  .project-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+    font-size: var(--step--2);
+  }
+
+  .project-cat {
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .project-abrir {
+    color: var(--text-faint);
+  }
+
+  .project-link:hover .project-abrir {
+    color: var(--accent);
   }
 
   .project-media {
@@ -185,22 +245,28 @@ const counts = Object.fromEntries(
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    padding: var(--space-4) var(--space-4) var(--space-5);
+    padding: var(--space-4);
     flex-grow: 1;
   }
 
   .project-body h2,
   .project-body h3 {
     font-size: var(--step-1);
-    font-weight: 600;
-    letter-spacing: 0;
+    font-weight: 700;
+    letter-spacing: var(--track-tight);
+  }
+
+  .project-link:hover h2,
+  .project-link:hover h3 {
+    color: var(--accent);
   }
 
   .project-body > p {
-    color: var(--text-muted);
-    font-size: var(--step--1);
-    line-height: var(--leading-snug);
     flex-grow: 1;
+    font-family: var(--font-prose);
+    font-size: var(--step-0);
+    line-height: var(--leading-snug);
+    color: var(--text-muted);
   }
 
   .project-tags {
@@ -213,19 +279,13 @@ const counts = Object.fromEntries(
   }
 
   .project-tags li {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
+    font-size: var(--step--2);
     color: var(--text-faint);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1px var(--space-2);
+    padding: 0 var(--space-2);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .project-link:hover {
-      transform: none;
-    }
     .project-media video {
       display: none;
     }

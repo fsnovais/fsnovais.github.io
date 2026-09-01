@@ -32,7 +32,7 @@ export const about = {
         titulo: 'What keeps my attention',
         paragrafos: [
           'New tech, films and games. If someone is patiently explaining how a thing works underneath, I will watch to the end.',
-          'And money. I track my own spending with more care than strictly necessary, I like knowing where every bit of it goes, and I have a postgraduate degree in financial management. Finance and investing are what I study hardest outside work.',
+          'And finances. I track my own spending with more care than strictly necessary, I like knowing where every bit of it goes, and I have a postgraduate degree in financial management. Finance and investing are what I study hardest outside work.',
         ],
       },
       {
@@ -44,7 +44,7 @@ export const about = {
       {
         titulo: 'This site',
         paragrafos: [
-          'I write about tech, money and whatever else catches my eye. Longer pieces go to the <a href="{blog}">blog</a>, short notes to the <a href="{devlog}">devlog</a>. I write it for myself six months from now. If it is useful to someone else, even better.',
+          'I write about tech, finances and whatever else catches my eye. Longer pieces go to the <a href="{blog}">blog</a>, short notes to the <a href="{devlog}">devlog</a>. I write it for myself six months from now. If it is useful to someone else, even better.',
         ],
       },
     ],
@@ -72,7 +72,7 @@ export const about = {
         titulo: 'O que me prende a atenção',
         paragrafos: [
           'Tecnologia nova, filme e jogo. Se tem alguém explicando com calma como uma coisa funciona por dentro, eu assisto até o fim.',
-          'E dinheiro. Controlo meus gastos com mais cuidado do que seria necessário, gosto de saber para onde foi cada real e sou pós-graduado em gestão financeira. Finanças e investimento são o que eu mais estudo fora do trabalho.',
+          'E Finanças. Controlo meus gastos com mais cuidado do que seria necessário, gosto de saber para onde foi cada real e sou pós-graduado em gestão financeira. Finanças e investimento são o que eu mais estudo fora do trabalho.',
         ],
       },
       {

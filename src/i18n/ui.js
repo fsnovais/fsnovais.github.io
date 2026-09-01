@@ -32,16 +32,22 @@ export const ui = {
     'nav.skip': 'Skip to content',
 
     // controles
-    'toggle.theme.toDark': 'Switch to dark theme',
-    'toggle.theme.toLight': 'Switch to light theme',
+    'theme.open': 'Change theme',
+    'theme.label': 'Theme',
+    'theme.group': 'Terminal themes',
+    'crt.label': 'CRT',
+    'crt.on': 'Turn the CRT effect on',
+    'crt.off': 'Turn the CRT effect off',
+    'status.hint': 'press / to search',
+    'status.session': 'session',
     'toggle.lang': 'Ver em português',
     'toggle.langGroup': 'Language',
     'toggle.langCurrent': 'current language',
 
     // busca
     'search.buttonAria': 'Search posts',
-    'search.placeholder': 'Search posts…',
-    'search.hint': 'Type to search, ↑↓ to move, ↵ to open, esc to close',
+    'search.placeholder': 'search posts',
+    'search.hint': '↑↓ move · ↵ open · esc close',
     'search.empty': 'No results for “{query}”',
     'search.close': 'Close search',
 
@@ -65,7 +71,7 @@ export const ui = {
     'home.contactCard': 'Open to data engineering roles, and to talking about anything on this site. I reply within two business days.',
     'home.contactLabel': 'Contact',
     'home.whoami.lines':
-      'data engineer during business hours|writing about data, AI and money|strong coffee, stronger queries|always testing a new idea',
+      'data engineer during business hours|writing about data, AI and finances|strong coffee, stronger queries|always testing a new idea',
 
     // projetos
     'projects.eyebrow': 'Projects',
@@ -135,7 +141,7 @@ export const ui = {
     'about.cv': 'Download CV (PDF)',
 
     // 404
-    '404.title': 'This page does not exist',
+    '404.title': 'command not found',
     '404.description': 'The page you were looking for does not exist.',
     '404.explanation':
       'The address may have changed, or the link that brought you here is out of date.',
@@ -152,16 +158,22 @@ export const ui = {
     'nav.footer': 'Links do rodapé',
     'nav.skip': 'Pular para o conteúdo',
 
-    'toggle.theme.toDark': 'Mudar para o tema escuro',
-    'toggle.theme.toLight': 'Mudar para o tema claro',
+    'theme.open': 'Trocar de tema',
+    'theme.label': 'Tema',
+    'theme.group': 'Temas de terminal',
+    'crt.label': 'CRT',
+    'crt.on': 'Ligar o efeito CRT',
+    'crt.off': 'Desligar o efeito CRT',
+    'status.hint': 'aperte / para buscar',
+    'status.session': 'sessão',
     'toggle.lang': 'View in English',
     'toggle.langGroup': 'Idioma',
     'toggle.langCurrent': 'idioma atual',
 
     // busca
     'search.buttonAria': 'Buscar posts',
-    'search.placeholder': 'Buscar posts…',
-    'search.hint': 'Digite para buscar, ↑↓ para navegar, ↵ para abrir, esc para fechar',
+    'search.placeholder': 'buscar posts',
+    'search.hint': '↑↓ navegar · ↵ abrir · esc fechar',
     'search.empty': 'Nenhum resultado para “{query}”',
     'search.close': 'Fechar busca',
 
@@ -185,7 +197,7 @@ export const ui = {
       'Aberto a oportunidades em engenharia de dados e a conversar sobre qualquer assunto daqui. Respondo em até dois dias úteis.',
     'home.contactLabel': 'Contato',
     'home.whoami.lines':
-      'engenheiro de dados nas horas úteis|escrevendo sobre tecnologia, IA e dinheiro|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
+      'engenheiro de dados nas horas úteis|escrevendo sobre tecnologia, IA e Finanças|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
 
     'projects.eyebrow': 'Projetos',
     'projects.title': 'O que eu construí',
@@ -229,7 +241,7 @@ export const ui = {
       'Registro curto do que aparece: um problema no trabalho, uma ferramenta que valeu a pena, uma conta que não fechou, ou qualquer outra coisa que mereça registro. Para textos mais longos, veja o',
     'devlog.introLink': 'blog',
     'devlog.description':
-      'Notas curtas do dia a dia: código, dinheiro e o que mais aparecer. Problemas reais, o que testei e o que resolveu.',
+      'Notas curtas do dia a dia: código, finanças e o que mais aparecer. Problemas reais, o que testei e o que resolveu.',
     'posts.subscribe': 'Assinar por RSS',
     'posts.section.blog': 'Blog',
     'posts.section.devlog': 'Devlog',
@@ -248,7 +260,7 @@ export const ui = {
     'about.ctaContact': 'Falar comigo',
     'about.cv': 'Baixar currículo (PDF)',
 
-    '404.title': 'Esta página não existe',
+    '404.title': 'command not found',
     '404.description': 'A página que você procurou não existe.',
     '404.explanation':
       'O endereço pode ter mudado, ou o link que te trouxe aqui está desatualizado.',

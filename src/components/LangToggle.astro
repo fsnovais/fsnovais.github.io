@@ -57,33 +57,33 @@ const opcoes = Object.keys(languages).map((codigo) => ({
   .lang-toggle {
     display: inline-flex;
     align-items: stretch;
-    height: 34px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
+    /* 24px de alvo + 1px de borda de cada lado */
+    height: 26px;
+    border: 1px solid var(--border-ui);
   }
 
   .opcao {
     display: grid;
     place-items: center;
+    min-width: 24px;
     padding: 0 var(--space-2);
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-size: var(--step--2);
+    letter-spacing: 0.06em;
     color: var(--text-faint);
     text-decoration: none;
     transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
   }
 
   .opcao + .opcao {
-    border-left: 1px solid var(--border);
+    border-left: 1px solid var(--border-ui);
   }
 
-  /* o idioma da página fica aceso: mostra onde você está */
+  /* o idioma da página fica invertido: mostra onde você está */
   .opcao[aria-current='true'] {
-    color: var(--accent);
-    background: var(--accent-wash);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
   }
 
   .opcao:not([aria-current]):hover {

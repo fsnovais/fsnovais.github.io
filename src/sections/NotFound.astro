@@ -16,10 +16,19 @@ const saidas = [
 
 <section class="section erro">
   <div class="container erro-inner">
-    <p class="codigo">404</p>
-    <h1>{t('404.title')}</h1>
+    <p class="comando" data-erro-comando>
+      <span class="prompt" aria-hidden="true">$</span> cd <span data-erro-caminho>.</span>
+    </p>
+    <p class="stderr">
+      <span class="rotulo" aria-hidden="true">bash:</span>
+      <span data-erro-mensagem>cd: no such file or directory</span>
+      <span class="codigo" aria-hidden="true">[exit 404]</span>
+    </p>
+
+    <h1 class="phos">{t('404.title')}</h1>
     <p class="explicacao">{t('404.explanation')}</p>
 
+    <p class="comando"><span class="prompt" aria-hidden="true">$</span> ls ~/</p>
     <ul class="saidas">
       {
         saidas.map((s) => (
@@ -36,7 +45,7 @@ const saidas = [
   .erro {
     display: flex;
     align-items: center;
-    min-height: 60vh;
+    min-height: 62vh;
   }
 
   .erro-inner {
@@ -46,43 +55,74 @@ const saidas = [
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-3);
+    width: 100%;
   }
 
-  .codigo {
-    font-family: var(--font-mono);
+  .comando {
     font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    color: var(--accent);
+    color: var(--text-faint);
+    word-break: break-all;
+  }
+
+  /* a mensagem de erro tem cor de erro, como teria num terminal de verdade */
+  .stderr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--error);
+    margin-bottom: var(--space-3);
+  }
+
+  .stderr .rotulo,
+  .stderr .codigo {
+    color: var(--text-faint);
   }
 
   h1 {
     font-size: var(--step-3);
+    letter-spacing: -0.035em;
   }
 
   .explicacao {
+    font-family: var(--font-prose);
+    font-size: var(--step-1);
+    line-height: var(--leading-prose);
     color: var(--text-muted);
-    max-width: 46ch;
+    max-width: 54ch;
+    margin-bottom: var(--space-4);
   }
 
   .saidas {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-5);
+    gap: var(--space-2) var(--space-4);
     list-style: none;
     padding: 0;
-    margin-top: var(--space-4);
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--border);
     width: 100%;
   }
 
   .saidas a {
+    display: inline-block;
+    padding: 0 var(--space-2);
     color: var(--text-muted);
     text-decoration: none;
+    border: 1px solid var(--border);
+    font-size: var(--step-0);
   }
 
   .saidas a:hover {
-    color: var(--accent);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
   }
 </style>
+
+<script>
+  // mostra o caminho que o visitante realmente tentou abrir, como faria o shell
+  const alvo = document.querySelector('[data-erro-caminho]');
+  const mensagem = document.querySelector('[data-erro-mensagem]');
+  const caminho = window.location.pathname;
+  if (alvo) alvo.textContent = caminho;
+  if (mensagem) mensagem.textContent = `cd: ${caminho}: no such file or directory`;
+</script>

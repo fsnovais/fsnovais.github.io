@@ -1,13 +1,18 @@
 ---
-// só os subsets latinos: evita baixar cirílico, grego e vietnamita sem necessidade
-import '@fontsource-variable/archivo/wght.css';
+/*
+  Duas famílias, cada uma com um trabalho:
+    JetBrains Mono  -> a interface inteira, títulos e dados
+    IBM Plex Sans   -> só o corpo dos textos longos
+
+  Apenas os subsets latinos: evita baixar cirílico, grego e vietnamita à toa.
+*/
+import '@fontsource-variable/jetbrains-mono/wght.css';
 import '@fontsource/ibm-plex-sans/latin-400.css';
-import '@fontsource/ibm-plex-sans/latin-500.css';
-import '@fontsource/ibm-plex-mono/latin-400.css';
-import '@fontsource/ibm-plex-mono/latin-500.css';
+import '@fontsource/ibm-plex-sans/latin-600.css';
 import '../styles/global.css';
 
 import Header from '../components/Header.astro';
+import StatusBar from '../components/StatusBar.astro';
 import Footer from '../components/Footer.astro';
 import { site, knowsAbout } from '../data/site.js';
 import { localeTags, languages, defaultLang } from '../i18n/ui.js';
@@ -46,6 +51,10 @@ const rotaNeutra = stripLang(Astro.url.pathname);
 const temParDeIdioma =
   !/^\/404(\.html)?\/?$/.test(rotaNeutra) && temParProp !== false;
 
+// caminho no estilo shell: '/' vira '~', '/blog/post/' vira '~/blog/post'
+const caminhoLimpo = rotaNeutra.replace(/\/+$/, '');
+const caminho = caminhoLimpo === '' || caminhoLimpo === '/' ? '~' : `~${caminhoLimpo}`;
+
 const personLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -66,17 +75,28 @@ const personLd = {
     <meta name="generator" content={Astro.generator} />
 
     <!--
-      Aplica o tema salvo ANTES da primeira pintura.
-      Sem isto, quem escolheu claro veria um lampejo escuro a cada navegação.
+      Aplica tema e CRT ANTES da primeira pintura. Sem isto, quem escolheu
+      gruvbox veria um lampejo âmbar a cada navegação.
+      Quem tinha 'dark' ou 'light' salvos da versão anterior do site é migrado
+      para o tema equivalente, sem perder a escolha.
     -->
     <script is:inline>
       try {
+        var temas = ['amber', 'green', 'gruvbox', 'nord', 'tokyo', 'paper'];
+        var antigo = { dark: 'amber', light: 'paper' };
         var tema = localStorage.getItem('tema');
-        if (tema === 'dark' || tema === 'light') {
+        if (antigo[tema]) {
+          tema = antigo[tema];
+          localStorage.setItem('tema', tema);
+        }
+        if (temas.indexOf(tema) > -1) {
           document.documentElement.setAttribute('data-theme', tema);
         }
+        if (localStorage.getItem('crt') === 'off') {
+          document.documentElement.setAttribute('data-crt', 'off');
+        }
       } catch (e) {
-        /* storage bloqueado: segue a preferência do sistema */
+        /* storage bloqueado: tema do sistema e CRT ligado */
       }
     </script>
 
@@ -112,8 +132,8 @@ const personLd = {
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#0c0f13" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0e12" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3f0e7" media="(prefers-color-scheme: light)" />
 
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={site.brand} />
@@ -150,10 +170,11 @@ const personLd = {
 
   <body>
     <a class="skip-link" href="#conteudo">{t('nav.skip')}</a>
-    <Header langAlternate={langAlternate} />
+    <Header caminho={caminho} />
     <main id="conteudo">
       <slot />
     </main>
     <Footer />
+    <StatusBar caminho={caminho} langAlternate={langAlternate} />
   </body>
 </html>

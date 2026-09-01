@@ -1,0 +1,185 @@
+---
+/*
+  Barra de status, fixa no rodapé da tela, no espírito das barras do tmux e do
+  vim: à esquerda quem você é e onde está; à direita os controles da sessão.
+
+  Ela concentra busca, tema, CRT e idioma. O cabeçalho fica só com a moldura da
+  janela e as abas, que é o que ele deveria fazer.
+*/
+import Search from './Search.astro';
+import ThemePicker from './ThemePicker.astro';
+import LangToggle from './LangToggle.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { caminho = '~', langAlternate } = Astro.props;
+---
+
+<div class="status" role="contentinfo" aria-label={t('status.session')}>
+  <span class="usuario">felipe@log</span>
+  <span class="caminho" title={caminho}>{caminho}</span>
+
+  <span class="dica" aria-hidden="true">{t('status.hint')}</span>
+
+  <div class="controles">
+    <Search />
+
+    <button
+      class="crt"
+      type="button"
+      data-crt-toggle
+      aria-pressed="true"
+      data-rotulo-on={t('crt.on')}
+      data-rotulo-off={t('crt.off')}
+      title={t('crt.off')}
+    >
+      <span aria-hidden="true">{t('crt.label')}</span>
+      <span class="led" data-crt-led aria-hidden="true"></span>
+      <span class="visually-hidden" data-crt-label>{t('crt.off')}</span>
+    </button>
+
+    <ThemePicker />
+    <LangToggle destinoAlternativo={langAlternate} />
+  </div>
+</div>
+
+<style>
+  .status {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    height: var(--status-h);
+    padding-right: var(--space-2);
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+  }
+
+  /* bloco invertido, como o indicador de modo de um editor */
+  .usuario {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    padding-inline: var(--space-3);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .caminho {
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dica {
+    margin-left: auto;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .controles {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .crt {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    /* 24px é o alvo mínimo de toque do WCAG 2.5.8; a barra tem 30px */
+    height: 24px;
+    padding: 0 var(--space-2);
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+
+  .crt:hover {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  /* lampadinha: acesa com o efeito ligado, apagada sem ele */
+  .led {
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    box-shadow: var(--glow);
+  }
+
+  .crt[aria-pressed='false'] .led {
+    background: transparent;
+    border: 1px solid var(--border-ui);
+    box-shadow: none;
+  }
+
+  .crt:hover .led {
+    background: var(--on-accent);
+    box-shadow: none;
+  }
+
+  @media (max-width: 60rem) {
+    .dica {
+      display: none;
+    }
+    .controles {
+      margin-left: auto;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    /* o caminho sai; o rótulo CRT fica, porque uma lampadinha sozinha
+       não diz a ninguém o que aquele botão faz */
+    .caminho {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const raiz = document.documentElement;
+  const botao = document.querySelector('[data-crt-toggle]');
+  const legenda = document.querySelector('[data-crt-label]');
+
+  function ligado() {
+    return raiz.getAttribute('data-crt') !== 'off';
+  }
+
+  function refletir() {
+    const on = ligado();
+    botao?.setAttribute('aria-pressed', String(on));
+    // o rótulo descreve a ação do clique, não o estado atual
+    const texto = on ? botao?.dataset.rotuloOff : botao?.dataset.rotuloOn;
+    botao?.setAttribute('title', texto ?? '');
+    if (legenda) legenda.textContent = texto ?? '';
+  }
+
+  botao?.addEventListener('click', () => {
+    const novo = ligado() ? 'off' : 'on';
+    raiz.setAttribute('data-crt', novo);
+    try {
+      localStorage.setItem('crt', novo);
+    } catch {
+      // storage bloqueado: a escolha vale só para esta visita
+    }
+    refletir();
+  });
+
+  refletir();
+</script>

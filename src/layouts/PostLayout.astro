@@ -41,20 +41,23 @@ const articleLd = {
 >
   <article class="post section">
     <div class="container post-inner">
-      <a class="voltar" href={voltarPara}>&lt; {rotulo}</a>
+      <a class="voltar" href={voltarPara}>
+        <span class="prompt" aria-hidden="true">$</span>{' '}cd ../{rotulo.toLowerCase()}
+      </a>
 
       <header class="post-head">
-        <h1>{title}</h1>
+        <h1 class="phos">{title}</h1>
         <p class="meta">
+          <span class="modo" aria-hidden="true">-rw-r--r--</span>
           <time datetime={dataIso(date)}>{formatarData(date, lang)}</time>
-          <span aria-hidden="true">/</span>
+          <span aria-hidden="true">·</span>
           <span>{minutos} {t('posts.readingTime')}</span>
         </p>
         {
           tags.length > 0 && (
             <ul class="tags">
               {tags.map((t) => (
-                <li>{t}</li>
+                <li>#{t}</li>
               ))}
             </ul>
           )
@@ -66,6 +69,7 @@ const articleLd = {
       </div>
 
       <footer class="post-foot">
+        <p class="comando" aria-hidden="true"><span class="prompt">$</span> echo $REPLY</p>
         <p>
           {t('post.footer')}{' '}
           <a href={site.socials[1].url} target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -84,12 +88,13 @@ const articleLd = {
   }
 
   .voltar {
-    display: inline-block;
-    font-family: var(--font-mono);
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
     font-size: var(--step--1);
     color: var(--text-faint);
     text-decoration: none;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-5);
   }
 
   .voltar:hover {
@@ -100,21 +105,27 @@ const articleLd = {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    padding-bottom: var(--space-6);
+    padding-bottom: var(--space-5);
     border-bottom: 1px solid var(--border);
     margin-bottom: var(--space-6);
   }
 
   .post-head h1 {
     font-size: var(--step-3);
+    letter-spacing: -0.035em;
   }
 
+  /* metadados como a linha de um `ls -l`: permissões, data, tamanho */
   .meta {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
-    font-family: var(--font-mono);
     font-size: var(--step--1);
     color: var(--text-faint);
+  }
+
+  .modo {
+    color: var(--border-strong);
   }
 
   .meta span[aria-hidden] {
@@ -130,25 +141,40 @@ const articleLd = {
   }
 
   .tags li {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: var(--step--2);
     color: var(--accent);
-    background: var(--accent-wash);
-    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
-    border-radius: var(--radius);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
     padding: 0 var(--space-2);
   }
 
-  /* ---------- corpo do texto ---------- */
+  /* =====================================================================
+     CORPO DO ARTIGO
+     Aqui, e só aqui, o mono dá lugar ao sans: um texto de dez minutos em
+     monoespaçado cansa a vista, e o site existe para ser lido. Os títulos
+     continuam mono, marcados com ## e ###, como no arquivo que os gerou.
+     ===================================================================== */
 
   .prose {
-    max-width: var(--measure);
+    max-width: var(--measure-prose);
+    font-family: var(--font-prose);
     font-size: var(--step-1);
-    line-height: 1.7;
+    line-height: var(--leading-prose);
+    color: var(--text-muted);
   }
 
   .prose :global(> * + *) {
     margin-top: var(--space-5);
+  }
+
+  .prose :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .prose :global(h2),
+  .prose :global(h3) {
+    font-family: var(--font-mono);
+    color: var(--text);
   }
 
   .prose :global(h2) {
@@ -162,45 +188,85 @@ const articleLd = {
     margin-top: var(--space-6);
   }
 
+  .prose :global(h2)::before {
+    content: '## ';
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .prose :global(h3)::before {
+    content: '### ';
+    color: var(--accent);
+    font-weight: 400;
+  }
+
   .prose :global(a) {
     color: var(--link);
+    text-decoration-color: color-mix(in srgb, var(--link) 55%, transparent);
+  }
+
+  .prose :global(a:hover) {
+    background: var(--accent);
+    color: var(--on-accent);
+    text-decoration-color: transparent;
   }
 
   .prose :global(ul),
   .prose :global(ol) {
-    padding-left: 1.4em;
+    padding-left: 1.5em;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .prose :global(li)::marker {
-    color: var(--accent-dim);
+  .prose :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  /* marcador em forma de traço, como uma lista escrita no terminal */
+  .prose :global(ul > li) {
+    padding-left: 2.2ch;
+    position: relative;
+  }
+
+  .prose :global(ul > li)::before {
+    content: '-';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .prose :global(ol > li)::marker {
+    font-family: var(--font-mono);
+    color: var(--accent);
   }
 
   .prose :global(blockquote) {
     border-left: 2px solid var(--accent);
-    padding-left: var(--space-5);
-    color: var(--text-muted);
-    font-style: italic;
+    padding-left: var(--space-4);
+    color: var(--text-faint);
   }
 
   .prose :global(code) {
     font-family: var(--font-mono);
-    font-size: 0.86em;
-    background: var(--surface);
+    font-size: 0.84em;
+    background: var(--bg-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.1em 0.35em;
+    padding: 0.1em 0.4em;
+    color: var(--text);
   }
 
   .prose :global(pre) {
-    background: var(--surface);
+    background: var(--bg-alt);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-left: 2px solid var(--accent-dim);
     padding: var(--space-4);
     overflow-x: auto;
+    font-family: var(--font-mono);
     font-size: var(--step--1);
+    line-height: 1.55;
   }
 
   .prose :global(pre code) {
@@ -211,42 +277,57 @@ const articleLd = {
   }
 
   .prose :global(img) {
-    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
   }
 
   .prose :global(hr) {
     border: 0;
-    border-top: 1px solid var(--border);
+    height: 1px;
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--border) 0,
+      var(--border) 6px,
+      transparent 6px,
+      transparent 10px
+    );
   }
 
   .prose :global(table) {
     width: 100%;
     border-collapse: collapse;
-    font-size: var(--step-0);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
   }
 
   .prose :global(th),
   .prose :global(td) {
     text-align: left;
-    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    padding: var(--space-2) var(--space-4) var(--space-2) 0;
     border-bottom: 1px solid var(--border);
   }
 
   .prose :global(th) {
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
+    font-size: var(--step--2);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--text-faint);
+    color: var(--accent);
     font-weight: 500;
+    border-bottom-color: var(--border-strong);
   }
 
   .post-foot {
     margin-top: var(--space-8);
-    padding-top: var(--space-5);
+    padding-top: var(--space-4);
     border-top: 1px solid var(--border);
+    font-family: var(--font-prose);
     color: var(--text-muted);
-    font-size: var(--step-0);
+  }
+
+  .post-foot .comando {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    margin-bottom: var(--space-2);
   }
 </style>
