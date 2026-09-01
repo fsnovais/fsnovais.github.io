@@ -1,0 +1,351 @@
+---
+import { listarComTraducao, formatarData, dataIso } from '../lib/posts.js';
+import { site } from '../data/site.js';
+import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const [blog, devlog] = await Promise.all([
+  listarComTraducao('blog', lang),
+  listarComTraducao('devlog', lang),
+]);
+
+// feed único: o que importa é a data, não a seção
+const recentes = [
+  ...blog.map((i) => ({ ...i, secao: 'blog' })),
+  ...devlog.map((i) => ({ ...i, secao: 'devlog' })),
+]
+  .sort((a, b) => b.post.data.date.getTime() - a.post.data.date.getTime())
+  .slice(0, 6);
+
+// {devlog} e {contato} viram o endereço no idioma da página
+const lede = t('home.lede')
+  .replaceAll('{devlog}', rota('devlog', lang))
+  .replaceAll('{blog}', rota('blog', lang))
+  .replaceAll('{contato}', `${rota('sobre', lang)}#contato`);
+
+const atalhos = [
+  { titulo: t('nav.projects'), texto: t('home.projectsCard'), href: rota('projetos', lang) },
+  { titulo: t('nav.about'), texto: t('home.aboutCard'), href: rota('sobre', lang) },
+  {
+    titulo: t('home.contactLabel'),
+    texto: t('home.contactCard'),
+    href: `${rota('sobre', lang)}#contato`,
+  },
+];
+---
+
+<section class="intro">
+  <div class="container intro-inner">
+    <div class="titulo">
+      <h1>{site.brand}</h1>
+      <p class="assinatura">{site.name}</p>
+    </div>
+    <p class="lede" set:html={lede} />
+  </div>
+</section>
+
+<section class="section feed">
+  <div class="container">
+    <div class="feed-head">
+      <h2>{t('home.latest')}</h2>
+      <p class="arquivos">
+        <a href={rota('blog', lang)}>{t('home.allBlog')}</a>
+        <span aria-hidden="true">/</span>
+        <a href={rota('devlog', lang)}>{t('home.allDevlog')}</a>
+      </p>
+    </div>
+
+    {
+      recentes.length === 0 ? (
+        <p class="vazio">{t('posts.empty')}</p>
+      ) : (
+        <ul class="lista">
+          {recentes.map(({ post, lang: langPost, traduzido, secao }) => (
+            <li>
+              <article>
+                <p class="meta">
+                  <span class="secao">{t(`posts.section.${secao}`)}</span>
+                  <time datetime={dataIso(post.data.date)}>
+                    {formatarData(post.data.date, lang)}
+                  </time>
+                  {!traduzido && (
+                    <span class="so-idioma">
+                      {langPost === 'pt' ? t('posts.onlyPortuguese') : t('posts.onlyEnglish')}
+                    </span>
+                  )}
+                </p>
+                <h3>
+                  <a
+                    href={localizedPath(langPost, `/${secao}/${post.id}`)}
+                    lang={traduzido ? undefined : langPost}
+                  >
+                    {post.data.title}
+                  </a>
+                </h3>
+                <p class="resumo" lang={traduzido ? undefined : langPost}>
+                  {post.data.description}
+                </p>
+              </article>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<section class="section mais">
+  <div class="container">
+    <h2 class="mais-titulo">{t('home.moreTitle')}</h2>
+    <ul class="atalhos">
+      {
+        atalhos.map((a) => (
+          <li>
+            <a href={a.href}>
+              <span class="atalho-titulo">{a.titulo}</span>
+              <span class="atalho-texto">{a.texto}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* ---------- intro ---------- */
+  .intro {
+    padding-block: var(--space-9) var(--space-7);
+    border-bottom: 1px solid var(--border);
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 72px 72px;
+    background-position: center;
+    position: relative;
+  }
+
+  .intro::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 70% 60% at 30% 45%,
+      var(--bg) 30%,
+      color-mix(in srgb, var(--bg) 55%, transparent) 100%
+    );
+    pointer-events: none;
+  }
+
+  .intro-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .titulo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .intro h1 {
+    font-size: var(--step-4);
+    line-height: 0.98;
+  }
+
+  .assinatura {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .lede {
+    max-width: 58ch;
+    font-size: var(--step-1);
+    color: var(--text-muted);
+  }
+
+  .lede :global(a) {
+    color: var(--text);
+    text-decoration-color: var(--accent-dim);
+    text-underline-offset: 0.2em;
+  }
+
+  .lede :global(a:hover) {
+    color: var(--accent);
+  }
+
+  @media (max-width: 40rem) {
+    .intro {
+      padding-block: var(--space-7);
+      background-size: 48px 48px;
+    }
+  }
+
+  /* ---------- feed ---------- */
+  .feed-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-5);
+  }
+
+  .feed-head h2 {
+    font-size: var(--step-2);
+  }
+
+  .arquivos {
+    display: flex;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .arquivos a {
+    color: var(--text-faint);
+    text-decoration: none;
+  }
+
+  .arquivos a:hover {
+    color: var(--accent);
+  }
+
+  .arquivos span {
+    color: var(--border-strong);
+  }
+
+  .lista {
+    list-style: none;
+    padding: 0;
+  }
+
+  .lista li {
+    border-top: 1px solid var(--border);
+  }
+
+  .lista li:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lista article {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    max-width: var(--measure);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .secao {
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .so-idioma {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 var(--space-2);
+  }
+
+  .lista h3 {
+    font-size: var(--step-2);
+    font-weight: 600;
+  }
+
+  .lista h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .lista h3 a:hover {
+    color: var(--accent);
+  }
+
+  .resumo {
+    color: var(--text-muted);
+    line-height: var(--leading-snug);
+  }
+
+  .vazio {
+    color: var(--text-muted);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ---------- atalhos ---------- */
+  .mais {
+    border-top: 1px solid var(--border);
+    background: var(--bg-alt);
+  }
+
+  .mais-titulo {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-5);
+  }
+
+  .atalhos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+  }
+
+  .atalhos a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    height: 100%;
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .atalhos a:hover {
+    border-color: var(--border-strong);
+  }
+
+  .atalho-titulo {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .atalhos a:hover .atalho-titulo {
+    color: var(--accent);
+  }
+
+  .atalho-texto {
+    color: var(--text-muted);
+    font-size: var(--step--1);
+    line-height: var(--leading-snug);
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site.js';
+import ProjectsPage from '../../sections/ProjectsPage.astro';
+import { useTranslations } from '../../i18n/utils.js';
+const t = useTranslations('en');
+---
+
+<BaseLayout
+  title={`Projects, ${site.brand}`}
+  description={t('projects.intro')}
+  image="/og/en/projetos.png"
+>
+  <ProjectsPage />
+</BaseLayout>

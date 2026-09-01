@@ -1,0 +1,46 @@
+---
+import PostList from '../components/PostList.astro';
+import { listarComTraducao } from '../lib/posts.js';
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+
+const { colecao } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const itens = await listarComTraducao(colecao, lang);
+
+// o prefixo do idioma sai de localizedPath, nunca fixo no código
+const outroPrefixado = rota(colecao === 'blog' ? 'devlog' : 'blog', lang);
+---
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{t(`${colecao}.eyebrow`)}</p>
+      <h1>{t(`${colecao}.title`)}</h1>
+      <p>
+        {t(`${colecao}.intro`)} <a href={outroPrefixado}>{t(`${colecao}.introLink`)}</a>.
+      </p>
+      <p class="feed-link">
+        <a href={`/rss/${lang}/${colecao}.xml`}>{t('posts.subscribe')}</a>
+      </p>
+    </div>
+
+    <PostList itens={itens} base={`/${colecao}`} />
+  </div>
+</section>
+
+<style>
+  h1 {
+    font-size: var(--step-3);
+  }
+  .feed-link a {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    text-decoration: none;
+  }
+  .feed-link a:hover {
+    color: var(--accent);
+  }
+</style>

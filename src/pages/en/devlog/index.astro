@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { site } from '../../../data/site.js';
+import PostsIndex from '../../../sections/PostsIndex.astro';
+import { useTranslations } from '../../../i18n/utils.js';
+const t = useTranslations('en');
+---
+
+<BaseLayout
+  title={`Devlog, ${site.brand}`}
+  description={t('devlog.description')}
+  image="/og/en/devlog.png"
+>
+  <PostsIndex colecao="devlog" />
+</BaseLayout>

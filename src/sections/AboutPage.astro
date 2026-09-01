@@ -1,0 +1,107 @@
+---
+/*
+  O texto dos dois idiomas fica em src/i18n/about.js e sai do currículo em
+  cv/curriculo.html. Ao mudar um, revise o outro.
+*/
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+import { about } from '../i18n/about.js';
+import Contact from '../components/Contact.astro';
+import { site } from '../data/site.js';
+
+// caminho do PDF em src/data/site.js; vazio esconde o botão
+const CURRICULO = site.cv;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const c = about[lang];
+
+// {blog}, {devlog} e {projetos} viram o endereço no idioma da página
+function resolver(html) {
+  return String(html)
+    .replaceAll('{blog}', rota('blog', lang))
+    .replaceAll('{devlog}', rota('devlog', lang))
+    .replaceAll('{projetos}', rota('projetos', lang));
+}
+---
+
+<section class="section">
+  <div class="container sobre">
+    <div class="section-head">
+      <p class="eyebrow">{t('about.eyebrow')}</p>
+      <h1>Felipe Novais</h1>
+    </div>
+
+    <div class="prosa">
+      <p class="destaque">{c.destaque}</p>
+
+      {
+        c.blocos.map((bloco) => (
+          <>
+            <h2>{bloco.titulo}</h2>
+            {bloco.paragrafos.map((texto) => (
+              <p class={texto.lacuna ? 'lacuna' : undefined} set:html={resolver(texto.html ?? texto)} />
+            ))}
+          </>
+        ))
+      }
+
+      <div class="cta">
+        <a class="btn btn-solid" href="#contato">{t('about.ctaContact')}</a>
+        {
+          CURRICULO && (
+            <a class="btn" href={CURRICULO} target="_blank" rel="noopener noreferrer">
+              {t('about.cv')}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<Contact />
+
+<style>
+  .sobre {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+  }
+
+  h1 {
+    font-size: var(--step-3);
+  }
+
+  .prosa {
+    max-width: var(--measure);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .destaque {
+    font-size: var(--step-1);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .prosa p {
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .prosa h2 {
+    font-size: var(--step-2);
+    color: var(--text);
+    margin-top: var(--space-4);
+  }
+
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site.js';
+import NotFound from '../sections/NotFound.astro';
+import { useTranslations } from '../i18n/utils.js';
+
+// O GitHub Pages serve este arquivo em qualquer rota inexistente, inclusive /en/...
+// Por isso ele fica em português, o idioma padrão do site.
+const t = useTranslations('pt');
+---
+
+<BaseLayout
+  title={`${t('404.title')}, ${site.brand}`}
+  description={t('404.description')}
+  noindex={true}
+>
+  <NotFound />
+</BaseLayout>

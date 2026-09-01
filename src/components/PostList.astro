@@ -1,0 +1,124 @@
+---
+import { formatarData, dataIso } from '../lib/posts.js';
+import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+/** itens: [{ post, lang, traduzido }] vindos de listarComTraducao */
+const { itens, base } = Astro.props;
+---
+
+{
+  itens.length === 0 ? (
+    <p class="vazio">{t('posts.empty')}</p>
+  ) : (
+    <ul class="post-list">
+      {itens.map(({ post, lang: langPost, traduzido }) => (
+        <li>
+          <article>
+            <time datetime={dataIso(post.data.date)}>
+              {formatarData(post.data.date, lang)}
+            </time>
+            <h2>
+              {/* sem tradução, o link leva à versão que existe de fato */}
+              <a
+                href={localizedPath(langPost, `${base}/${post.id}`)}
+                lang={traduzido ? undefined : langPost}
+              >
+                {post.data.title}
+              </a>
+            </h2>
+            <p lang={traduzido ? undefined : langPost}>{post.data.description}</p>
+            <p class="selos">
+              {post.data.draft && <span class="selo rascunho">{t('posts.draft')}</span>}
+              {!traduzido && (
+                <span class="selo idioma">
+                  {langPost === 'pt' ? t('posts.onlyPortuguese') : t('posts.onlyEnglish')}
+                </span>
+              )}
+            </p>
+          </article>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .post-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-list li {
+    border-top: 1px solid var(--border);
+  }
+
+  .post-list li:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  article {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    max-width: var(--measure);
+  }
+
+  time {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+  }
+
+  h2 {
+    font-size: var(--step-2);
+    font-weight: 600;
+  }
+
+  h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  h2 a:hover {
+    color: var(--accent);
+  }
+
+  article > p {
+    color: var(--text-muted);
+    line-height: var(--leading-snug);
+  }
+
+  .selos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .selos:empty {
+    display: none;
+  }
+
+  .selo {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    border-radius: var(--radius);
+    padding: 0 var(--space-2);
+  }
+
+  .rascunho {
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .idioma {
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+  }
+</style>

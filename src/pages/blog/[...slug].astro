@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { listarPosts, temTraducao } from '../../lib/posts.js';
+
+const LANG = 'pt';
+const SECAO = 'blog';
+
+export async function getStaticPaths() {
+  const posts = await listarPosts('blog', 'pt');
+  const outro = 'pt' === 'en' ? 'pt' : 'en';
+
+  return Promise.all(
+    posts.map(async (post) => ({
+      params: { slug: post.id },
+      props: { post, temOutro: await temTraducao('blog', outro, post.id) },
+    }))
+  );
+}
+
+const { post, temOutro } = Astro.props;
+const { Content } = await render(post);
+---
+
+<PostLayout post={post} colecao={SECAO} corpo={post.body} temOutro={temOutro}>
+  <Content />
+</PostLayout>

@@ -1,0 +1,252 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { formatarData, dataIso, tempoDeLeitura } from '../lib/posts.js';
+import { site } from '../data/site.js';
+import { getLangFromUrl, useTranslations, localizedPath } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const { post, colecao, corpo, temOutro = true } = Astro.props;
+const { title, description, date, updated, tags } = post.data;
+
+const outroIdioma = lang === 'en' ? 'pt' : 'en';
+const voltarPara = localizedPath(lang, colecao === 'blog' ? '/blog' : '/devlog');
+const rotulo = colecao === 'blog' ? 'Blog' : 'Devlog';
+const minutos = tempoDeLeitura(corpo);
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: dataIso(date),
+  ...(updated ? { dateModified: dataIso(updated) } : {}),
+  author: { '@type': 'Person', name: site.name, url: site.url },
+  publisher: { '@type': 'Person', name: site.name },
+  mainEntityOfPage: new URL(Astro.url.pathname, site.url).href,
+};
+---
+
+<BaseLayout
+  title={`${title}, ${site.brand}`}
+  description={description}
+  image={`/og/${lang}/${colecao}/${post.id}.png`}
+  type="article"
+  publishedAt={date.toISOString()}
+  jsonLd={articleLd}
+  temParDeIdioma={temOutro}
+  langAlternate={temOutro ? undefined : localizedPath(outroIdioma, `/${colecao}`)}
+>
+  <article class="post section">
+    <div class="container post-inner">
+      <a class="voltar" href={voltarPara}>&lt; {rotulo}</a>
+
+      <header class="post-head">
+        <h1>{title}</h1>
+        <p class="meta">
+          <time datetime={dataIso(date)}>{formatarData(date, lang)}</time>
+          <span aria-hidden="true">/</span>
+          <span>{minutos} {t('posts.readingTime')}</span>
+        </p>
+        {
+          tags.length > 0 && (
+            <ul class="tags">
+              {tags.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+
+      <footer class="post-foot">
+        <p>
+          {t('post.footer')}{' '}
+          <a href={site.socials[1].url} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          {' '}{t('post.footerOr')}{' '}
+          <a href={`${rota('sobre', lang)}#contato`}>{t('post.footerForm')}</a>.
+        </p>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-inner {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+  }
+
+  .voltar {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    text-decoration: none;
+    margin-bottom: var(--space-6);
+  }
+
+  .voltar:hover {
+    color: var(--accent);
+  }
+
+  .post-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-6);
+  }
+
+  .post-head h1 {
+    font-size: var(--step-3);
+  }
+
+  .meta {
+    display: flex;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .meta span[aria-hidden] {
+    color: var(--border-strong);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+
+  .tags li {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    background: var(--accent-wash);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: var(--radius);
+    padding: 0 var(--space-2);
+  }
+
+  /* ---------- corpo do texto ---------- */
+
+  .prose {
+    max-width: var(--measure);
+    font-size: var(--step-1);
+    line-height: 1.7;
+  }
+
+  .prose :global(> * + *) {
+    margin-top: var(--space-5);
+  }
+
+  .prose :global(h2) {
+    font-size: var(--step-2);
+    margin-top: var(--space-8);
+  }
+
+  .prose :global(h3) {
+    font-size: var(--step-1);
+    font-weight: 600;
+    margin-top: var(--space-6);
+  }
+
+  .prose :global(a) {
+    color: var(--link);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.4em;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .prose :global(li)::marker {
+    color: var(--accent-dim);
+  }
+
+  .prose :global(blockquote) {
+    border-left: 2px solid var(--accent);
+    padding-left: var(--space-5);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+  }
+
+  .prose :global(pre) {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    overflow-x: auto;
+    font-size: var(--step--1);
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+
+  .prose :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step-0);
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    text-align: left;
+    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prose :global(th) {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    font-weight: 500;
+  }
+
+  .post-foot {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--step-0);
+  }
+</style>

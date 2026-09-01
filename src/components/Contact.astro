@@ -1,0 +1,215 @@
+---
+// A chave do StaticForms sai do código e vira variável de ambiente.
+// Defina PUBLIC_STATICFORMS_KEY em .env (local) e como secret no GitHub Actions.
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const accessKey = import.meta.env.PUBLIC_STATICFORMS_KEY ?? '';
+---
+
+<section class="section contact" id="contato">
+  <div class="container contact-inner">
+    <div class="section-head">
+      <p class="eyebrow">{t('contact.eyebrow')}</p>
+      <h2>{t('contact.title')}</h2>
+      <p>{t('contact.intro')}</p>
+    </div>
+
+    <form
+      class="form"
+      data-contact-form
+      data-access-key={accessKey}
+      data-msg-ok={t('contact.ok')}
+      data-msg-erro={t('contact.error')}
+      data-msg-sem-chave={t('contact.noKey')}
+      data-rotulo-enviar={t('contact.send')}
+      data-rotulo-enviando={t('contact.sending')}
+    >
+      <div class="field-row">
+        <p class="field">
+          <label for="nome">{t('contact.name')}</label>
+          <input id="nome" name="name" type="text" autocomplete="name" required />
+        </p>
+        <p class="field">
+          <label for="email">{t('contact.email')}</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+        </p>
+      </div>
+
+      <p class="field">
+        <label for="mensagem">{t('contact.message')}</label>
+        <textarea id="mensagem" name="message" rows="6" required></textarea>
+      </p>
+
+      {/* armadilha de spam: humano não preenche um campo escondido */}
+      <p class="honeypot" aria-hidden="true">
+        <label for="empresa">{t('contact.honeypot')}</label>
+        <input id="empresa" name="honeypot" type="text" tabindex="-1" autocomplete="off" />
+      </p>
+
+      <div class="form-actions">
+        <button class="btn btn-solid" type="submit" data-submit>{t('contact.send')}</button>
+        <p class="form-status" role="status" data-status></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    border-top: 1px solid var(--border);
+    background: var(--bg-alt);
+  }
+
+  .contact-inner {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 34rem) {
+    .field-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  label {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  input:hover,
+  textarea:hover {
+    border-color: var(--border-strong);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+  }
+
+  .form-status {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .form-status[data-state='ok'] {
+    color: var(--ok);
+  }
+
+  .form-status[data-state='erro'] {
+    color: var(--error);
+  }
+</style>
+
+<script>
+  const form = document.querySelector('[data-contact-form]');
+  const status = form?.querySelector('[data-status]');
+  const submit = form?.querySelector('[data-submit]');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const data = new FormData(form);
+
+    const txt = form.dataset;
+
+    // se a armadilha veio preenchida, foi robô: finge sucesso e não envia nada
+    if (data.get('honeypot')) {
+      status.textContent = txt.msgOk;
+      status.dataset.state = 'ok';
+      form.reset();
+      return;
+    }
+
+    const accessKey = form.getAttribute('data-access-key');
+    if (!accessKey) {
+      status.textContent = txt.msgSemChave;
+      status.dataset.state = 'erro';
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = txt.rotuloEnviando;
+    status.textContent = '';
+    delete status.dataset.state;
+
+    try {
+      const response = await fetch('https://api.staticforms.xyz/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessKey,
+          name: data.get('name'),
+          email: data.get('email'),
+          message: data.get('message'),
+          replyTo: data.get('email'),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        status.textContent = txt.msgOk;
+        status.dataset.state = 'ok';
+        form.reset();
+      } else {
+        throw new Error(result.message || 'Falha no envio');
+      }
+    } catch {
+      status.textContent = txt.msgErro;
+      status.dataset.state = 'erro';
+    } finally {
+      submit.disabled = false;
+      submit.textContent = txt.rotuloEnviar;
+    }
+  });
+</script>

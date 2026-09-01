@@ -1,0 +1,99 @@
+---
+import {
+  getLangFromUrl,
+  useTranslations,
+  otherLang,
+  stripLang,
+  localizedPath,
+  paginaNoIdioma,
+} from '../i18n/utils.js';
+import { languages, localeTags } from '../i18n/ui.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const outro = otherLang(lang);
+
+// `destinoAlternativo` cobre o caso de um post sem tradução: em vez de levar
+// a uma página que não existe, leva à listagem do outro idioma.
+const { destinoAlternativo } = Astro.props;
+const rotaNeutra = stripLang(Astro.url.pathname);
+const ehNotFound = /^\/404(\.html)?\/?$/.test(rotaNeutra);
+
+const destinoOutro = ehNotFound
+  ? localizedPath(outro, '/')
+  : (destinoAlternativo ?? paginaNoIdioma(Astro.url.pathname, lang, outro));
+const destinoAtual = localizedPath(lang, ehNotFound ? '/' : rotaNeutra);
+
+// ordem fixa, para o controle não trocar de lugar ao navegar
+const opcoes = Object.keys(languages).map((codigo) => ({
+  codigo,
+  ativo: codigo === lang,
+  href: codigo === lang ? destinoAtual : destinoOutro,
+}));
+---
+
+<div class="lang-toggle" role="group" aria-label={t('toggle.langGroup')}>
+  {
+    opcoes.map((o) => (
+      <a
+        class="opcao"
+        href={o.href}
+        hreflang={localeTags[o.codigo].hreflang}
+        lang={o.codigo}
+        aria-current={o.ativo ? 'true' : undefined}
+        data-lang-switch={o.ativo ? undefined : o.codigo}
+        title={o.ativo ? undefined : t('toggle.lang')}
+      >
+        <span aria-hidden="true">{o.codigo.toUpperCase()}</span>
+        <span class="visually-hidden">
+          {o.ativo ? `${languages[o.codigo]} (${t('toggle.langCurrent')})` : languages[o.codigo]}
+        </span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    align-items: stretch;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .opcao {
+    display: grid;
+    place-items: center;
+    padding: 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    text-decoration: none;
+    transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+
+  .opcao + .opcao {
+    border-left: 1px solid var(--border);
+  }
+
+  /* o idioma da página fica aceso: mostra onde você está */
+  .opcao[aria-current='true'] {
+    color: var(--accent);
+    background: var(--accent-wash);
+  }
+
+  .opcao:not([aria-current]):hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .opcao:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: 0;
+  }
+</style>

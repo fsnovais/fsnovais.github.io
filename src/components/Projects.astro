@@ -1,0 +1,264 @@
+---
+import { Image } from 'astro:assets';
+import { projects, categories } from '../data/projects.js';
+import { getLangFromUrl, useTranslations, pick } from '../i18n/utils.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// numa página própria o título é h1; embutido numa página maior seria h2
+const { titulo = 'h2' } = Astro.props;
+const Titulo = titulo;
+// o card fica um nível abaixo do título da seção, sem pular degrau
+const TituloCard = titulo === 'h1' ? 'h2' : 'h3';
+
+const counts = Object.fromEntries(
+  categories.map((c) => [c.id, projects.filter((p) => p.category === c.id).length])
+);
+---
+
+<section class="section" id="projetos">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{t('projects.eyebrow')}</p>
+      <Titulo>{t('projects.title')}</Titulo>
+      <p>{t('projects.intro')}</p>
+    </div>
+
+    <div class="filters" role="group" aria-label={t('projects.filterLabel')}>
+      <button class="filter" type="button" data-filter="todos" aria-pressed="true">
+        {t('projects.all')} <span class="filter-count">{projects.length}</span>
+      </button>
+      {
+        categories.map((c) => (
+          <button class="filter" type="button" data-filter={c.id} aria-pressed="false">
+            {t(`projects.cat.${c.id}`)} <span class="filter-count">{counts[c.id]}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <p
+      class="visually-hidden"
+      role="status"
+      data-filter-status
+      data-rotulo-singular={t('projects.shown')}
+      data-rotulo-plural={t('projects.shownPlural')}
+    ></p>
+
+    <ul class="project-grid" data-project-grid>
+      {
+        projects.map((p) => (
+          <li class="project" data-category={p.category}>
+            <a class="project-link" href={p.url} target="_blank" rel="noopener noreferrer">
+              <div class="project-media">
+                {p.video ? (
+                  <video
+                    poster={p.image.src}
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    preload="metadata"
+                    aria-hidden="true"
+                  >
+                    {p.video.map((s) => (
+                      <source src={s.src} type={s.type} />
+                    ))}
+                  </video>
+                ) : (
+                  <Image src={p.image} alt="" width={640} height={400} loading="lazy" />
+                )}
+              </div>
+              <div class="project-body">
+                <TituloCard>{p.title}</TituloCard>
+                <p>{pick(p.description, lang)}</p>
+                <ul class="project-tags">
+                  {p.tags.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  h1 {
+    font-size: var(--step-3);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+
+  .filter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--step-0);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+
+  .filter:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .filter[aria-pressed='true'] {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-wash);
+  }
+
+  .filter-count {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .filter[aria-pressed='true'] .filter-count {
+    color: var(--accent);
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+  }
+
+  .project[hidden] {
+    display: none;
+  }
+
+  .project-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+
+  .project-link:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    color: inherit;
+  }
+
+  .project-media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-media :global(img),
+  .project-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-4) var(--space-5);
+    flex-grow: 1;
+  }
+
+  .project-body h2,
+  .project-body h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .project-body > p {
+    color: var(--text-muted);
+    font-size: var(--step--1);
+    line-height: var(--leading-snug);
+    flex-grow: 1;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-2);
+  }
+
+  .project-tags li {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1px var(--space-2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-link:hover {
+      transform: none;
+    }
+    .project-media video {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll('[data-filter]');
+  const items = document.querySelectorAll('[data-project-grid] > .project');
+  const status = document.querySelector('[data-filter-status]');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.getAttribute('data-filter');
+
+      buttons.forEach((b) =>
+        b.setAttribute('aria-pressed', String(b === btn))
+      );
+
+      let visiveis = 0;
+      items.forEach((item) => {
+        const match = filter === 'todos' || item.getAttribute('data-category') === filter;
+        item.hidden = !match;
+        if (match) visiveis += 1;
+      });
+
+      if (status) {
+        const rotulo =
+          visiveis === 1
+            ? status.dataset.rotuloSingular
+            : status.dataset.rotuloPlural;
+        status.textContent = `${visiveis} ${rotulo}`;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,108 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+<button
+  class="theme-toggle"
+  type="button"
+  data-theme-toggle
+  aria-pressed="false"
+  title={t('toggle.theme.toLight')}
+  data-rotulo-escuro={t('toggle.theme.toDark')}
+  data-rotulo-claro={t('toggle.theme.toLight')}
+>
+  <span class="visually-hidden" data-theme-label>{t('toggle.theme.toLight')}</span>
+  <svg class="ico ico-sol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="12" cy="12" r="4.2"></circle>
+    <path d="M12 2.6v2.2M12 19.2v2.2M21.4 12h-2.2M4.8 12H2.6M18.6 5.4l-1.6 1.6M7 17l-1.6 1.6M18.6 18.6L17 17M7 7L5.4 5.4"></path>
+  </svg>
+  <svg class="ico ico-lua" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M20 13.4A8.2 8.2 0 1 1 10.6 4a6.6 6.6 0 0 0 9.4 9.4z"></path>
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+
+  .theme-toggle:hover {
+    color: var(--accent);
+    border-color: var(--border-strong);
+  }
+
+  .ico {
+    grid-area: 1 / 1;
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* o ícone mostrado é o do tema para onde o clique leva */
+  .ico-sol { display: none; }
+  .ico-lua { display: block; }
+
+  :global(html[data-theme='dark']) .ico-sol { display: block; }
+  :global(html[data-theme='dark']) .ico-lua { display: none; }
+
+  @media (prefers-color-scheme: dark) {
+    :global(html:not([data-theme='light'])) .ico-sol { display: block; }
+    :global(html:not([data-theme='light'])) .ico-lua { display: none; }
+  }
+</style>
+
+<script>
+  // os rótulos vêm do i18n por atributo: nada de dicionário duplicado aqui
+  const raiz = document.documentElement;
+  const botao = document.querySelector('[data-theme-toggle]');
+  const legenda = document.querySelector('[data-theme-label]');
+
+  function temaAtual() {
+    const escolhido = raiz.getAttribute('data-theme');
+    if (escolhido === 'dark' || escolhido === 'light') return escolhido;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function atualizarRotulo() {
+    const texto =
+      temaAtual() === 'dark'
+        ? botao?.dataset.rotuloClaro
+        : botao?.dataset.rotuloEscuro;
+    if (legenda) legenda.textContent = texto;
+    botao?.setAttribute('title', texto);
+    botao?.setAttribute('aria-pressed', String(temaAtual() === 'dark'));
+  }
+
+  atualizarRotulo();
+
+  botao?.addEventListener('click', () => {
+    const novo = temaAtual() === 'dark' ? 'light' : 'dark';
+    raiz.setAttribute('data-theme', novo);
+    try {
+      localStorage.setItem('tema', novo);
+    } catch {
+      // navegação privada ou storage bloqueado: o tema vale só para esta visita
+    }
+    atualizarRotulo();
+  });
+
+  // se o visitante nunca escolheu, seguir a mudança do sistema em tempo real
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!raiz.hasAttribute('data-theme')) atualizarRotulo();
+  });
+</script>

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Felipe Novais — Senior Data Engineer</title>
+    <style>
+      /*
+        Fonte do curriculo. Edite este arquivo e gere o PDF de novo:
+          - pelo navegador: abra o arquivo, Ctrl+P, Salvar como PDF, margens padrao
+          - ou: npm run cv   (precisa do Chromium via Playwright)
+
+        O PDF gerado vai para public/arquivos/felipe-novais-cv.pdf.
+      */
+
+      @page {
+        size: A4;
+        margin: 12mm 14mm;
+      }
+
+      :root {
+        --tinta: #14181d;
+        --suave: #3f4753;
+        --marca: #1f3864;
+        --regua: #b9c2cf;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Liberation Sans', Arial, Helvetica, sans-serif;
+        font-size: 9pt;
+        line-height: 1.3;
+        color: var(--tinta);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ---------- cabecalho ---------- */
+
+      .nome {
+        font-size: 20pt;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-align: center;
+        color: var(--marca);
+        margin: 0 0 2mm;
+      }
+
+      .titulo {
+        text-align: center;
+        font-size: 10pt;
+        color: var(--suave);
+        margin: 0 0 1.5mm;
+      }
+
+      .contato {
+        text-align: center;
+        font-size: 9pt;
+        color: var(--suave);
+        margin: 0;
+      }
+
+      .contato a {
+        color: var(--marca);
+        text-decoration: underline;
+      }
+
+      .sep {
+        color: var(--regua);
+        padding: 0 1.5mm;
+      }
+
+      /* ---------- secoes ---------- */
+
+      h2 {
+        font-size: 9.5pt;
+        font-weight: 700;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        color: var(--marca);
+        margin: 3.2mm 0 1mm;
+        padding-bottom: 1mm;
+        border-bottom: 0.6pt solid var(--regua);
+      }
+
+      p {
+        margin: 0 0 1.4mm;
+        text-align: justify;
+      }
+
+      .competencia {
+        margin: 0 0 1.3mm;
+      }
+
+      .competencia b {
+        color: var(--tinta);
+      }
+
+      /* ---------- experiencia ---------- */
+
+      .cargo {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 6mm;
+        margin-top: 2.8mm;
+      }
+
+      .cargo:first-of-type {
+        margin-top: 2mm;
+      }
+
+      .cargo-nome {
+        font-weight: 700;
+        font-size: 10pt;
+      }
+
+      .cargo-data {
+        font-style: italic;
+        font-size: 9pt;
+        color: var(--suave);
+        white-space: nowrap;
+      }
+
+      .cargo-local {
+        font-style: italic;
+        font-size: 9pt;
+        color: var(--suave);
+        margin: 0.3mm 0 1.4mm;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 4.6mm;
+      }
+
+      li {
+        margin-bottom: 0.9mm;
+        text-align: justify;
+      }
+
+      li::marker {
+        color: var(--suave);
+      }
+
+      /* ---------- blocos finais ---------- */
+
+      .formacao {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 6mm;
+      }
+
+      .idiomas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2mm 10mm;
+        margin: 0;
+      }
+
+      /* evita quebrar um cargo entre duas paginas */
+      .experiencia-item {
+        break-inside: avoid;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p class="nome">FELIPE NOVAIS</p>
+    <p class="titulo">
+      Senior Data Engineer &nbsp;|&nbsp; AWS Data Platforms, Analytics Engineering &amp; Power BI
+    </p>
+    <!--
+      O telefone fica fora de proposito: este PDF e servido publicamente, e numero
+      de telefone e o dado que mais atrai raspador. O e-mail fica, porque
+      recrutador espera um canal direto de resposta.
+    -->
+    <p class="contato">
+      Brasília, Brazil (Remote)<span class="sep">|</span
+      ><a href="mailto:fellipesn17@gmail.com">fellipesn17@gmail.com</a><span class="sep">|</span
+      ><a href="https://www.linkedin.com/in/felipesn17/">LinkedIn</a><span class="sep">|</span
+      ><a href="https://github.com/fsnovais">GitHub</a><span class="sep">|</span
+      ><a href="https://fsnovais.github.io">Portfolio</a>
+    </p>
+
+    <h2>Summary</h2>
+    <p>
+      Data Engineer with 5+ years building cloud-native pipelines, warehouses, and analytics
+      platforms end to end, from source-system ingestion through to consumption in reporting tools
+      and business applications. Hands-on AWS experience with Lambda, S3, Glue, and CloudFormation
+      for event-driven ingestion and infrastructure automation, combined with deep Snowflake and dbt
+      expertise in dimensional modeling. Proven record integrating complex multi-source enterprise
+      systems (Oracle Fusion HCM, CMiC) into governed warehouses that feed Power BI reporting with
+      the quality, consistency, and timeliness the business depends on. Operates with high autonomy,
+      owns committed delivery dates, and communicates technical trade-offs to product and business
+      stakeholders. Fluent English (B2+).
+    </p>
+
+    <h2>Core Competencies</h2>
+    <p class="competencia">
+      <b>AWS &amp; Cloud Data:</b> AWS Lambda, Amazon S3, AWS Glue, CloudFormation
+      (infrastructure-as-code), Snowflake, BigQuery, GCP, Fivetran
+    </p>
+    <p class="competencia">
+      <b>Engineering &amp; Modeling:</b> Python for production data processing, advanced SQL
+      (Snowflake, Oracle, and comparable relational engines), dbt (models, macros, custom tests),
+      dimensional/Kimball modeling, ETL/ELT pipeline design, data quality diagnostics
+    </p>
+    <p class="competencia">
+      <b>Microsoft Ecosystem &amp; Reporting:</b> Power BI (semantic models, dashboards,
+      stakeholder-facing reporting), Azure DevOps
+    </p>
+    <p class="competencia">
+      <b>Delivery &amp; DevOps:</b> Git/GitHub, Azure DevOps Pipelines, CI/CD for data projects,
+      agile and demand-based delivery, data governance and PII-masking documentation
+    </p>
+
+    <h2>Experience</h2>
+
+    <div class="experiencia-item">
+      <div class="cargo">
+        <span class="cargo-nome">Data Engineer — AICG / BRF Consulting</span>
+        <span class="cargo-data">Dec 2025 – Present</span>
+      </div>
+      <p class="cargo-local">
+        Remote — (Oracle Fusion HCM / CMiC integration into Snowflake)
+      </p>
+      <ul>
+        <li>
+          Own end-to-end data workflows from source ingestion to consumption, delivering Snowflake
+          models that feed Power BI reports used across HR and operations.
+        </li>
+        <li>
+          Design and build dimensional models in Snowflake integrating Oracle Fusion HCM and CMiC
+          source systems for HR and operations reporting.
+        </li>
+        <li>
+          Develop dbt models, macros, and custom tests creating dimensions and facts following data
+          warehousing best practices.
+        </li>
+        <li>
+          Partner with business and product stakeholders to gather data requirements and evaluate
+          source systems, defining a standardized intake process for new reporting requests.
+        </li>
+        <li>
+          Produce field-mapping and data governance documentation reconciling two enterprise source
+          systems.
+        </li>
+        <li>
+          Manage version control and CI workflows for the warehouse codebase in Azure DevOps.
+        </li>
+      </ul>
+    </div>
+
+    <div class="experiencia-item">
+      <div class="cargo">
+        <span class="cargo-nome">Data Engineer — Redpill Analytics</span>
+        <span class="cargo-data">Aug 2021 – Mar 2026</span>
+      </div>
+      <p class="cargo-local">Remote</p>
+      <ul>
+        <li>
+          Built and optimized ingestion pipelines on AWS using Glue, Lambda, and S3 alongside
+          Fivetran connectors, including event-driven jobs triggered by S3 object events.
+        </li>
+        <li>
+          Automated infrastructure provisioning and deployment with AWS CloudFormation across
+          development, staging, and production.
+        </li>
+        <li>
+          Designed and maintained analytics-ready models in Snowflake using dbt across multiple
+          client engagements.
+        </li>
+        <li>
+          Implemented CI/CD workflows for data projects with Git and GitHub.
+        </li>
+      </ul>
+    </div>
+
+    <div class="experiencia-item">
+      <div class="cargo">
+        <span class="cargo-nome">Internship Trainee — BRB</span>
+        <span class="cargo-data">Apr 2021 – Jun 2022</span>
+      </div>
+      <ul>
+        <li>
+          Supported development and maintenance of internal systems, and monitored production logs
+          and transactional systems.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Education</h2>
+    <div class="formacao">
+      <span class="cargo-nome">Bachelor's in Computer Science — UNICEUB</span>
+      <span class="cargo-data">Jul 2018 – Jul 2023</span>
+    </div>
+    <p>Programming, data structures, algorithms, databases, and software engineering.</p>
+
+    <h2>Certifications</h2>
+    <ul>
+      <li>dbt Developer — September 2024</li>
+      <li>DevOps Essentials Professional Certificate (DEPC) — January 2019</li>
+      <li>Scrum Foundation Professional Certificate (SFPC) — January 2019</li>
+    </ul>
+
+    <h2>Languages</h2>
+    <p class="idiomas">
+      <span><b>Portuguese:</b> Native/Fluent</span>
+      <span><b>English:</b> Fluent (B2+)</span>
+      <span><b>Spanish:</b> Intermediate</span>
+    </p>
+  </body>
+</html>

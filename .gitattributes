@@ -1,0 +1,11 @@
+# normaliza fim de linha: evita diffs falsos entre Windows e Linux
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.mp4 binary
+*.webm binary
+*.woff2 binary
+*.ico binary

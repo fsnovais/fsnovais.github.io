@@ -1,0 +1,139 @@
+---
+import { site } from '../data/site.js';
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const ano = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark" aria-hidden="true">{site.mark}</span>
+      <div>
+        <p class="footer-name">{site.brand}</p>
+        <p class="footer-role">{t('site.tagline')}</p>
+      </div>
+    </div>
+
+    <nav aria-label={t('nav.footer')}>
+      <ul class="footer-links">
+        {
+          site.socials.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener noreferrer">
+                {s.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          site.cv && (
+            <li>
+              <a href={site.cv} target="_blank" rel="noopener noreferrer">
+                {t('footer.cv')}
+              </a>
+            </li>
+          )
+        }
+        {
+          site.email && (
+            <li>
+              <a href={`mailto:${site.email}`}>Email</a>
+            </li>
+          )
+        }
+      </ul>
+    </nav>
+
+    <p class="footer-note">
+      <span>&copy; {ano}</span>
+      <span class="footer-sep" aria-hidden="true">/</span>
+      <span>{t('footer.builtWith')}</span>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-6);
+    background: var(--bg);
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .footer-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .footer-role {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+    line-height: 1.4;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--space-5);
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: var(--step--1);
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
+  }
+
+  .footer-note {
+    display: flex;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--text-faint);
+  }
+
+  .footer-sep {
+    color: var(--border-strong);
+  }
+
+  @media (max-width: 40rem) {
+    .footer-inner {
+      justify-content: flex-start;
+    }
+  }
+</style>

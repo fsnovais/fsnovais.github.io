@@ -1,0 +1,88 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils.js';
+import { rota } from '../i18n/routes.js';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const saidas = [
+  { chave: '404.home', rota: 'home' },
+  { chave: 'nav.blog', rota: 'blog' },
+  { chave: 'nav.devlog', rota: 'devlog' },
+  { chave: 'nav.projects', rota: 'projetos' },
+  { chave: 'nav.about', rota: 'sobre' },
+];
+---
+
+<section class="section erro">
+  <div class="container erro-inner">
+    <p class="codigo">404</p>
+    <h1>{t('404.title')}</h1>
+    <p class="explicacao">{t('404.explanation')}</p>
+
+    <ul class="saidas">
+      {
+        saidas.map((s) => (
+          <li>
+            <a href={rota(s.rota, lang)}>{t(s.chave)}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .erro {
+    display: flex;
+    align-items: center;
+    min-height: 60vh;
+  }
+
+  .erro-inner {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .codigo {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+  }
+
+  .explicacao {
+    color: var(--text-muted);
+    max-width: 46ch;
+  }
+
+  .saidas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-4);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    width: 100%;
+  }
+
+  .saidas a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .saidas a:hover {
+    color: var(--accent);
+  }
+</style>
