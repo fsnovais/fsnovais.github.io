@@ -1,6 +1,6 @@
-# fsnovais.github.io
+# felipe.log
 
-Site pessoal de Felipe Novais, construido em [Astro](https://astro.build) e publicado no
+Meu blog pessoal, construido em [Astro](https://astro.build) e publicado no
 GitHub Pages.
 
 Site estatico puro: nenhum JavaScript de framework chega ao navegador. As tres partes
