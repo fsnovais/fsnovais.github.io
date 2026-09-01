@@ -1,0 +1,25 @@
+name = "newsletter"
+main = "newsletter.js"
+compatibility_date = "2026-09-01"
+
+# Publica em newsletter.<subdominio>.workers.dev. Explícito de propósito: sem
+# esta linha o wrangler assume o padrão e avisa a cada deploy.
+workers_dev = true
+
+# Desligado de propósito. Ligado, cada versão publicada ganha um endereço
+# próprio e permanente, e toda versão antiga deste Worker continuaria acessível
+# para sempre. Como ele guarda a chave da Brevo, versão velha no ar é superfície
+# de ataque sem contrapartida: ninguém precisa pré-visualizar um endpoint que só
+# recebe POST de um formulário.
+preview_urls = false
+
+# Valores públicos: podem ficar no repositório.
+[vars]
+SITE_URL = "https://fsnovais.github.io"
+REDIRECT_PT = "https://fsnovais.github.io/newsletter/confirmado"
+REDIRECT_EN = "https://fsnovais.github.io/en/newsletter/confirmed"
+
+# Os segredos NÃO ficam aqui. Defina com:
+#   wrangler secret put BREVO_API_KEY
+#   wrangler secret put BREVO_LIST_ID
+#   wrangler secret put BREVO_TEMPLATE_ID
