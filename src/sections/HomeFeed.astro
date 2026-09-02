@@ -193,19 +193,19 @@ const atalhos = [
 
   .lede {
     margin-top: var(--space-3);
-    max-width: 66ch;
+    max-width: var(--reading);
     font-family: var(--font-prose);
     font-size: var(--step-1);
     line-height: var(--leading-prose);
     color: var(--text-muted);
   }
 
-  .lede :global(a) {
+  .lede :global(a:not(.btn)) {
     color: var(--text);
     text-decoration-color: var(--accent);
   }
 
-  .lede :global(a:hover) {
+  .lede :global(a:not(.btn):hover) {
     background: var(--accent);
     color: var(--on-accent);
     text-decoration-color: transparent;
@@ -323,7 +323,7 @@ const atalhos = [
 
   .col-resumo {
     grid-column: 3;
-    max-width: 72ch;
+    max-width: var(--reading);
     font-family: var(--font-prose);
     font-size: var(--step-0);
     line-height: var(--leading-snug);

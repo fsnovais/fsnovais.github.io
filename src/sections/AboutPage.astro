@@ -66,7 +66,7 @@ function resolver(html) {
 
 <style>
   .sobre {
-    max-width: var(--container-narrow);
+    max-width: var(--reading-box);
     margin-inline: auto;
   }
 
@@ -82,7 +82,7 @@ function resolver(html) {
 
   /* texto longo em sans, títulos em mono: mesma regra do artigo */
   .prosa {
-    max-width: var(--measure-prose);
+    max-width: var(--reading);
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
@@ -101,11 +101,11 @@ function resolver(html) {
     line-height: var(--leading-prose);
   }
 
-  .prosa :global(a) {
+  .prosa :global(a:not(.btn)) {
     color: var(--link);
   }
 
-  .prosa :global(a:hover) {
+  .prosa :global(a:not(.btn):hover) {
     background: var(--accent);
     color: var(--on-accent);
     text-decoration-color: transparent;

@@ -235,7 +235,7 @@ a:hover {
   flex-direction: column;
   gap: var(--space-3);
   margin-bottom: var(--space-6);
-  max-width: var(--measure);
+  max-width: var(--reading);
 }
 
 .section-head p {

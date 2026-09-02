@@ -84,6 +84,12 @@ const idArmadilha = `${id}-site`;
 
 <style>
   .assinatura-bloco {
+    /*
+      A mesma largura no fim do post e na home. Sem isto o bloco herda o
+      container de cada página e o mesmo componente aparece com dois tamanhos
+      diferentes, que era metade do problema de largura do site.
+    */
+    max-width: var(--reading);
     margin-block: var(--space-6);
   }
 
@@ -101,7 +107,7 @@ const idArmadilha = `${id}-site`;
 
   .lede {
     margin-top: var(--space-2);
-    max-width: 58ch;
+    max-width: var(--reading);
     font-family: var(--font-prose);
     font-size: var(--step-0);
     line-height: var(--leading-snug);
@@ -117,7 +123,7 @@ const idArmadilha = `${id}-site`;
     display: flex;
     align-items: stretch;
     gap: var(--space-2);
-    max-width: 34rem;
+    max-width: 100%;
   }
 
   .seta {
@@ -168,18 +174,18 @@ const idArmadilha = `${id}-site`;
 
   .aviso-privacidade {
     margin-top: var(--space-2);
-    max-width: 62ch;
+    max-width: var(--reading);
     font-family: var(--font-prose);
     font-size: var(--step--1);
     line-height: var(--leading-snug);
     color: var(--text-faint);
   }
 
-  .aviso-privacidade :global(a) {
+  .aviso-privacidade :global(a:not(.btn)) {
     color: var(--text-muted);
   }
 
-  .aviso-privacidade :global(a:hover) {
+  .aviso-privacidade :global(a:not(.btn):hover) {
     color: var(--on-accent);
     background: var(--accent);
     text-decoration-color: transparent;

@@ -55,10 +55,28 @@
   --space-9: 5.5rem;
 
   /* ---------- layout ---------- */
-  --measure: 74ch;        /* medida do mono: conta caractere, não palavra */
-  --measure-prose: 68ch;  /* medida do sans, para o corpo dos artigos */
+  /*
+    Duas larguras, e só duas. Antes eram doze, entre rem e ch, e o resultado
+    era cada bloco parando num lugar diferente da tela.
+
+    --container  faixa larga: cabeçalho, rodapé, listagens, grade de projetos
+    --reading    coluna de texto: post, sobre, privacidade, formulários e
+                 qualquer parágrafo de introdução
+
+    Numa página de leitura, TUDO usa --reading: título, metadados, corpo,
+    newsletter e rodapé do post. É isso que faz as bordas coincidirem dos dois
+    lados, em vez de o título ir mais longe que o texto.
+  */
   --container: 74rem;
-  --container-narrow: 48rem;
+  --reading: 38rem;
+
+  /*
+    Quando o mesmo elemento é .container e coluna de leitura ao mesmo tempo,
+    as bordas laterais dele entram na conta e o texto sai mais estreito que
+    --reading. Este token compensa, para a coluna medir o mesmo aqui e numa
+    página larga.
+  */
+  --reading-box: calc(var(--reading) + var(--space-5) * 2);
 
   /* terminal não tem canto arredondado */
   --radius: 0px;

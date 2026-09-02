@@ -72,7 +72,7 @@ const aviso = t('privacy.formNotice').replaceAll('{privacidade}', rota('privacid
   }
 
   .contact-inner {
-    max-width: var(--container-narrow);
+    max-width: var(--reading-box);
     margin-inline: auto;
   }
 
@@ -91,7 +91,7 @@ const aviso = t('privacy.formNotice').replaceAll('{privacidade}', rota('privacid
     font-size: var(--step-1);
     line-height: var(--leading-prose);
     color: var(--text-muted);
-    max-width: 66ch;
+    max-width: var(--reading);
   }
 
   .form {
@@ -173,18 +173,18 @@ const aviso = t('privacy.formNotice').replaceAll('{privacidade}', rota('privacid
 
   .aviso-privacidade {
     margin-top: var(--space-4);
-    max-width: 62ch;
+    max-width: var(--reading);
     font-family: var(--font-prose);
     font-size: var(--step--1);
     line-height: var(--leading-snug);
     color: var(--text-faint);
   }
 
-  .aviso-privacidade :global(a) {
+  .aviso-privacidade :global(a:not(.btn)) {
     color: var(--text-muted);
   }
 
-  .aviso-privacidade :global(a:hover) {
+  .aviso-privacidade :global(a:not(.btn):hover) {
     color: var(--on-accent);
     background: var(--accent);
     text-decoration-color: transparent;

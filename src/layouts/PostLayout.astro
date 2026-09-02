@@ -87,7 +87,7 @@ const articleLd = {
 
 <style>
   .post-inner {
-    max-width: var(--container-narrow);
+    max-width: var(--reading-box);
     margin-inline: auto;
   }
 
@@ -159,7 +159,7 @@ const articleLd = {
      ===================================================================== */
 
   .prose {
-    max-width: var(--measure-prose);
+    max-width: var(--reading);
     font-family: var(--font-prose);
     font-size: var(--step-1);
     line-height: var(--leading-prose);
@@ -204,12 +204,12 @@ const articleLd = {
     font-weight: 400;
   }
 
-  .prose :global(a) {
+  .prose :global(a:not(.btn)) {
     color: var(--link);
     text-decoration-color: color-mix(in srgb, var(--link) 55%, transparent);
   }
 
-  .prose :global(a:hover) {
+  .prose :global(a:not(.btn):hover) {
     background: var(--accent);
     color: var(--on-accent);
     text-decoration-color: transparent;
