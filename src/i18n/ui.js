@@ -68,7 +68,7 @@ export const ui = {
     'home.contactCard': 'Open to data engineering roles, and to talking about anything on this site. I reply within two business days.',
     'home.contactLabel': 'Contact',
     'home.whoami.lines':
-      'data engineer during business hours|writing about data, AI and finances|strong coffee, stronger queries|always testing a new idea',
+      'data engineer during business hours|writing about data, technology and finances|strong coffee, stronger queries|always testing a new idea',
 
     // projetos
     'projects.eyebrow': 'Projects',
@@ -223,7 +223,7 @@ export const ui = {
       'Aberto a oportunidades em engenharia de dados e a conversar sobre qualquer assunto daqui. Respondo em até dois dias úteis.',
     'home.contactLabel': 'Contato',
     'home.whoami.lines':
-      'engenheiro de dados nas horas úteis|escrevendo sobre tecnologia, IA e Finanças|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
+      'engenheiro de dados nas horas úteis|escrevendo sobre tecnologia, tecnologia e Finanças|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
 
     'projects.eyebrow': 'Projetos',
     'projects.title': 'O que eu construí',
