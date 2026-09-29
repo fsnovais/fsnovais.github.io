@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Felipe Novais — Senior Data Engineer</title>
+    <title>Felipe Novais | Senior Software Engineer</title>
     <style>
       /*
         Fonte do curriculo. Edite este arquivo e gere o PDF de novo:
@@ -10,6 +10,9 @@
           - ou: npm run cv   (precisa do Chromium via Playwright)
 
         O PDF gerado vai para public/arquivos/felipe-novais-cv.pdf.
+
+        Versao generica: sem metricas nem contagens, para servir a vagas de
+        software, full-stack, cloud e dados sem ajuste.
       */
 
       @page {
@@ -36,8 +39,8 @@
 
       body {
         font-family: 'Liberation Sans', Arial, Helvetica, sans-serif;
-        font-size: 9pt;
-        line-height: 1.3;
+        font-size: 9.5pt;
+        line-height: 1.35;
         color: var(--tinta);
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -56,7 +59,7 @@
 
       .titulo {
         text-align: center;
-        font-size: 10pt;
+        font-size: 10.5pt;
         color: var(--suave);
         margin: 0 0 1.5mm;
       }
@@ -86,9 +89,10 @@
         letter-spacing: 0.11em;
         text-transform: uppercase;
         color: var(--marca);
-        margin: 3.2mm 0 1mm;
+        margin: 4mm 0 1.2mm;
         padding-bottom: 1mm;
         border-bottom: 0.6pt solid var(--regua);
+        break-after: avoid;
       }
 
       p {
@@ -97,11 +101,8 @@
       }
 
       .competencia {
-        margin: 0 0 1.3mm;
-      }
-
-      .competencia b {
-        color: var(--tinta);
+        margin: 0 0 1.2mm;
+        text-align: left;
       }
 
       /* ---------- experiencia ---------- */
@@ -112,10 +113,6 @@
         align-items: baseline;
         gap: 6mm;
         margin-top: 2.8mm;
-      }
-
-      .cargo:first-of-type {
-        margin-top: 2mm;
       }
 
       .cargo-nome {
@@ -134,7 +131,8 @@
         font-style: italic;
         font-size: 9pt;
         color: var(--suave);
-        margin: 0.3mm 0 1.4mm;
+        margin: 0.3mm 0 1.2mm;
+        text-align: left;
       }
 
       ul {
@@ -144,7 +142,7 @@
 
       li {
         margin-bottom: 0.9mm;
-        text-align: justify;
+        text-align: left;
       }
 
       li::marker {
@@ -158,6 +156,7 @@
         justify-content: space-between;
         align-items: baseline;
         gap: 6mm;
+        margin-top: 1.5mm;
       }
 
       .idiomas {
@@ -171,13 +170,28 @@
       .experiencia-item {
         break-inside: avoid;
       }
+
+      /* cargos dentro de um mesmo empregador */
+      .sub {
+        padding-left: 3mm;
+        border-left: 0.6pt solid var(--regua);
+        margin-left: 0.5mm;
+      }
+
+      .sub .cargo {
+        margin-top: 1.8mm;
+      }
+
+      .sub .cargo-nome {
+        font-size: 9.5pt;
+      }
     </style>
   </head>
 
   <body>
     <p class="nome">FELIPE NOVAIS</p>
     <p class="titulo">
-      Senior Data Engineer &nbsp;|&nbsp; AWS Data Platforms, Analytics Engineering &amp; Power BI
+      Senior Software Engineer &nbsp;|&nbsp; Full-Stack, Cloud &amp; Data Platforms
     </p>
     <!--
       O telefone fica fora de proposito: este PDF e servido publicamente, e numero
@@ -194,129 +208,217 @@
 
     <h2>Summary</h2>
     <p>
-      Data Engineer with 5+ years building cloud-native pipelines, warehouses, and analytics
-      platforms end to end, from source-system ingestion through to consumption in reporting tools
-      and business applications. Hands-on AWS experience with Lambda, S3, Glue, and CloudFormation
-      for event-driven ingestion and infrastructure automation, combined with deep Snowflake and dbt
-      expertise in dimensional modeling. Proven record integrating complex multi-source enterprise
-      systems (Oracle Fusion HCM, CMiC) into governed warehouses that feed Power BI reporting with
-      the quality, consistency, and timeliness the business depends on. Operates with high autonomy,
-      owns committed delivery dates, and communicates technical trade-offs to product and business
-      stakeholders. Fluent English (B2+).
+      Software engineer who builds production systems end to end, from cloud infrastructure and
+      data pipelines to APIs and full-stack web applications. Works remotely with US clients,
+      designing solutions on AWS, Snowflake, and dbt, integrating enterprise systems such as Oracle
+      Fusion HCM, CMiC, and Salesforce, and shipping through code review, automated tests, and
+      CI/CD. Builds and maintains personal products in TypeScript, Next.js, and React. Uses AI
+      coding tools such as Claude Code daily and verifies every change with tests before it ships.
+      Works with high autonomy, sets technical standards for the team, and explains trade-offs
+      clearly to business and product stakeholders in fluent English.
     </p>
 
-    <h2>Core Competencies</h2>
+    <h2>Technical Skills</h2>
     <p class="competencia">
-      <b>AWS &amp; Cloud Data:</b> AWS Lambda, Amazon S3, AWS Glue, CloudFormation
-      (infrastructure-as-code), Snowflake, BigQuery, GCP, Fivetran
+      <b>Languages:</b> Python, TypeScript, JavaScript, SQL, Java, SOQL
     </p>
     <p class="competencia">
-      <b>Engineering &amp; Modeling:</b> Python for production data processing, advanced SQL
-      (Snowflake, Oracle, and comparable relational engines), dbt (models, macros, custom tests),
-      dimensional/Kimball modeling, ETL/ELT pipeline design, data quality diagnostics
+      <b>Web &amp; Back-End:</b> Next.js, React, Node.js, Astro, REST and GraphQL APIs, Supabase,
+      Progressive Web Apps, Cloudflare Workers
     </p>
     <p class="competencia">
-      <b>Microsoft Ecosystem &amp; Reporting:</b> Power BI (semantic models, dashboards,
-      stakeholder-facing reporting), Azure DevOps
+      <b>Cloud &amp; Infrastructure:</b> AWS (Lambda, S3, Glue, IAM, CloudFormation), Google Cloud
+      Platform, infrastructure as code, event-driven architecture
     </p>
     <p class="competencia">
-      <b>Delivery &amp; DevOps:</b> Git/GitHub, Azure DevOps Pipelines, CI/CD for data projects,
-      agile and demand-based delivery, data governance and PII-masking documentation
+      <b>Data:</b> Snowflake, dbt, BigQuery, Fivetran, relational data modeling, dimensional
+      (Kimball) modeling, ETL/ELT pipelines, data quality validation
+    </p>
+    <p class="competencia">
+      <b>Quality &amp; Delivery:</b> Git, GitHub Actions, Azure DevOps, Jenkins, CI/CD, code review,
+      unit and regression testing (Vitest, dbt tests), debugging, technical documentation, Scrum
+    </p>
+    <p class="competencia">
+      <b>AI-Assisted Development:</b> Claude Code, agentic coding workflows, local LLM setups
     </p>
 
     <h2>Experience</h2>
 
     <div class="experiencia-item">
       <div class="cargo">
-        <span class="cargo-nome">Data Engineer — AICG / BRF Consulting</span>
-        <span class="cargo-data">Dec 2025 – Present</span>
+        <span class="cargo-nome">BRF Consulting</span>
+        <span class="cargo-data">Aug 2021 – Present</span>
       </div>
       <p class="cargo-local">
-        Remote — (Oracle Fusion HCM / CMiC integration into Snowflake)
+        Remote from Brasília. Consultancy placing engineers with US technology partners. Also
+        conducts technical interviews for new engineers.
       </p>
-      <ul>
-        <li>
-          Own end-to-end data workflows from source ingestion to consumption, delivering Snowflake
-          models that feed Power BI reports used across HR and operations.
-        </li>
-        <li>
-          Design and build dimensional models in Snowflake integrating Oracle Fusion HCM and CMiC
-          source systems for HR and operations reporting.
-        </li>
-        <li>
-          Develop dbt models, macros, and custom tests creating dimensions and facts following data
-          warehousing best practices.
-        </li>
-        <li>
-          Partner with business and product stakeholders to gather data requirements and evaluate
-          source systems, defining a standardized intake process for new reporting requests.
-        </li>
-        <li>
-          Produce field-mapping and data governance documentation reconciling two enterprise source
-          systems.
-        </li>
-        <li>
-          Manage version control and CI workflows for the warehouse codebase in Azure DevOps.
-        </li>
-      </ul>
     </div>
 
-    <div class="experiencia-item">
+    <div class="experiencia-item sub">
       <div class="cargo">
-        <span class="cargo-nome">Data Engineer — Redpill Analytics</span>
-        <span class="cargo-data">Aug 2021 – Mar 2026</span>
+        <span class="cargo-nome">Data Engineer, AICG (US consulting partner)</span>
+        <span class="cargo-data">Dec 2025 – Present</span>
       </div>
-      <p class="cargo-local">Remote</p>
+      <p class="cargo-local">US construction company, Oracle Fusion HCM and CMiC on Snowflake</p>
       <ul>
         <li>
-          Built and optimized ingestion pipelines on AWS using Glue, Lambda, and S3 alongside
-          Fivetran connectors, including event-driven jobs triggered by S3 object events.
+          Own the warehouse codebase end to end, from source ingestion to the reporting layer, for
+          HR, payroll, and finance.
         </li>
         <li>
-          Automated infrastructure provisioning and deployment with AWS CloudFormation across
-          development, staging, and production.
+          Unified two enterprise source systems into a single conformed data model with a clear
+          source-of-truth rule, designing schemas and making grain decisions.
         </li>
         <li>
-          Designed and maintained analytics-ready models in Snowflake using dbt across multiple
-          client engagements.
+          Replaced legacy reporting logic with tested dbt models and ran parity checks against the
+          old outputs before cutover.
         </li>
         <li>
-          Implemented CI/CD workflows for data projects with Git and GitHub.
+          Defined layering and modeling conventions adopted by the team, including rules that keep
+          PII and unused fields out of reporting.
+        </li>
+        <li>
+          Ship models, macros, and custom tests through peer-reviewed pull requests and CI in Azure
+          DevOps, and review teammates' code.
+        </li>
+        <li>
+          Wrote field-mapping and data governance documentation, and co-designed the intake process
+          for new requests with business and product stakeholders.
+        </li>
+      </ul>
+    </div>
+
+    <div class="experiencia-item sub">
+      <div class="cargo">
+        <span class="cargo-nome">Data Engineer, Red Pill Analytics (US)</span>
+        <span class="cargo-data">Mar 2022 – Mar 2026</span>
+      </div>
+      <ul>
+        <li>
+          Built ingestion and orchestration services in Python on AWS Lambda, Glue, and S3,
+          including event-driven jobs triggered by S3 object events.
+        </li>
+        <li>
+          Automated infrastructure provisioning and deployments with AWS CloudFormation across
+          development, staging, and production, including IAM roles for each service.
+        </li>
+        <li>
+          Designed and integrated GraphQL APIs, and set up CI/CD with GitHub Actions to keep broken
+          changes out of production.
+        </li>
+        <li>
+          Delivered Snowflake and dbt models across several client engagements, onboarding quickly to
+          each client's stack and conventions.
+        </li>
+        <li>
+          On a BCG engagement, reworked existing model logic and introduced incremental models to
+          improve pipeline performance.
+        </li>
+        <li>Wrote technical documentation and reviewed pull requests for the team.</li>
+      </ul>
+    </div>
+
+    <div class="experiencia-item sub">
+      <div class="cargo">
+        <span class="cargo-nome">Salesforce Developer</span>
+        <span class="cargo-data">Aug 2021 – Mar 2022</span>
+      </div>
+      <ul>
+        <li>
+          Customized and extended the Salesforce platform for client business processes, owning
+          design, configuration, testing, and deployment.
+        </li>
+        <li>
+          Designed platform data models and ran data loads in and out with SOQL and SOSL, owning
+          data quality for business users.
         </li>
       </ul>
     </div>
 
     <div class="experiencia-item">
       <div class="cargo">
-        <span class="cargo-nome">Internship Trainee — BRB</span>
+        <span class="cargo-nome">Internship Trainee, BRB (Banco de Brasília)</span>
         <span class="cargo-data">Apr 2021 – Jun 2022</span>
       </div>
       <ul>
         <li>
-          Supported development and maintenance of internal systems, and monitored production logs
-          and transactional systems.
+          Supported development and maintenance of internal banking systems, SQL performance
+          tuning, and monitoring of production logs and transactional systems.
+        </li>
+      </ul>
+    </div>
+
+    <div class="experiencia-item">
+      <div class="cargo">
+        <span class="cargo-nome">Earlier Experience</span>
+        <span class="cargo-data">2017 – 2020</span>
+      </div>
+      <ul>
+        <li>
+          Ad Ops Analyst, Metrópoles: campaign delivery and performance reporting for commercial
+          teams.
+        </li>
+        <li>
+          IT Intern, CEASA-DF: development and maintenance of web systems, plus network and server
+          support.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Projects</h2>
+    <div class="experiencia-item">
+      <div class="cargo">
+        <span class="cargo-nome">Fluxo, Personal Finance App</span>
+        <span class="cargo-data">Next.js, React, TypeScript, Supabase</span>
+      </div>
+      <ul>
+        <li>
+          Designed and built a personal finance app end to end: cash flow, monthly projections,
+          credit purchases, and bank statement import, with authentication and a Postgres backend on
+          Supabase.
+        </li>
+        <li>
+          Delivered as an offline-capable Progressive Web App, with a CI gate of linting, type
+          checking, and unit tests (Vitest) before every merge. Taken to early users.
+        </li>
+      </ul>
+    </div>
+    <div class="experiencia-item">
+      <div class="cargo">
+        <span class="cargo-nome">Felipe.log, Personal Site (fsnovais.github.io)</span>
+        <span class="cargo-data">Astro, Cloudflare Workers, GitHub Actions</span>
+      </div>
+      <ul>
+        <li>
+          Bilingual site and blog migrated from Create React App to Astro, deployed through GitHub
+          Actions, with a Cloudflare Worker isolating the newsletter provider and privacy-compliant
+          forms.
         </li>
       </ul>
     </div>
 
     <h2>Education</h2>
     <div class="formacao">
-      <span class="cargo-nome">Bachelor's in Computer Science — UNICEUB</span>
-      <span class="cargo-data">Jul 2018 – Jul 2023</span>
+      <span class="cargo-nome">B.Sc. in Computer Science, UNICEUB</span>
+      <span class="cargo-data">2018 – 2023</span>
     </div>
-    <p>Programming, data structures, algorithms, databases, and software engineering.</p>
+    <div class="formacao">
+      <span class="cargo-nome">Postgraduate Degree in Financial Management</span>
+    </div>
 
     <h2>Certifications</h2>
     <ul>
-      <li>dbt Developer — September 2024</li>
-      <li>DevOps Essentials Professional Certificate (DEPC) — January 2019</li>
-      <li>Scrum Foundation Professional Certificate (SFPC) — January 2019</li>
+      <li>dbt Developer (2024)</li>
+      <li>DevOps Essentials Professional Certificate, DEPC (2019)</li>
+      <li>Scrum Foundation Professional Certificate, SFPC (2019)</li>
+      <li>Anthropic Academy coursework toward Claude certification (in progress)</li>
     </ul>
 
     <h2>Languages</h2>
     <p class="idiomas">
-      <span><b>Portuguese:</b> Native/Fluent</span>
-      <span><b>English:</b> Fluent (B2+)</span>
+      <span><b>Portuguese:</b> Native</span>
+      <span><b>English:</b> Fluent</span>
       <span><b>Spanish:</b> Intermediate</span>
     </p>
   </body>

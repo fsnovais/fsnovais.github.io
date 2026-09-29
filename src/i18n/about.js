@@ -38,7 +38,7 @@ export const about = {
       {
         titulo: 'The work part',
         paragrafos: [
-          'I am a data engineer, which is where half of what I write here comes from. If that is what brought you, the <a href="/arquivos/felipe-novais-cv.pdf">CV in PDF</a> has the dates and the stack, and the <a href="{projetos}">projects</a> page has what I built.',
+          'I am a software engineer who works mostly with data and the cloud, which is where half of what I write here comes from. If that is what brought you, the <a href="/arquivos/felipe-novais-cv.pdf">CV in PDF</a> has the dates and the stack, and the <a href="{projetos}">projects</a> page has what I built.',
         ],
       },
       {
@@ -78,7 +78,7 @@ export const about = {
       {
         titulo: 'A parte do trabalho',
         paragrafos: [
-          'Sou engenheiro de dados, e é daí que vem metade do que escrevo por aqui. Se foi isso que te trouxe, o <a href="/arquivos/felipe-novais-cv.pdf">currículo em PDF</a> tem as datas e a stack, e a página de <a href="{projetos}">projetos</a> tem o que eu construí.',
+          'Sou engenheiro de software e trabalho principalmente com dados e nuvem, e é daí que vem metade do que escrevo por aqui. Se foi isso que te trouxe, o <a href="/arquivos/felipe-novais-cv.pdf">currículo em PDF</a> tem as datas e a stack, e a página de <a href="{projetos}">projetos</a> tem o que eu construí.',
         ],
       },
       {
