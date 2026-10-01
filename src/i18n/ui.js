@@ -49,7 +49,7 @@ export const ui = {
     'search.close': 'Close search',
 
     // meta do site
-    'site.role': 'Senior Data Engineer',
+    'site.role': 'Senior Software Engineer',
     'site.tagline': 'Technology and finance',
     'site.title': 'Felipe.log, technology and finance',
     'site.description':
@@ -65,10 +65,10 @@ export const ui = {
     'home.moreTitle': 'Beyond the writing',
     'home.projectsCard': 'What I have built, from data pipelines to web interfaces and small tools.',
     'home.aboutCard': 'How I work, the stack I use and how to reach me.',
-    'home.contactCard': 'Open to data engineering roles, and to talking about anything on this site. I reply within two business days.',
+    'home.contactCard': 'Open to software engineering roles, and to talking about anything on this site. I reply within two business days.',
     'home.contactLabel': 'Contact',
     'home.whoami.lines':
-      'data engineer during business hours|writing about data, technology and finances|strong coffee, stronger queries|always testing a new idea',
+      'software engineer during business hours|writing about data, technology and finances|strong coffee, stronger queries|always testing a new idea',
 
     // projetos
     'projects.eyebrow': 'Projects',
@@ -87,7 +87,7 @@ export const ui = {
     'contact.eyebrow': 'Contact',
     'contact.title': "Let's talk",
     'contact.intro':
-      'Open to data engineering roles, remote, and to trading notes on anything on this site, from pipelines and warehouse cost to what to do with the money. I reply within two business days.',
+      'Open to software engineering roles, remote, and to trading notes on anything on this site, from pipelines and warehouse cost to what to do with the money. I reply within two business days.',
     'contact.name': 'Name',
     'contact.email': 'Email',
     'contact.message': 'Message',
@@ -203,7 +203,7 @@ export const ui = {
     'search.empty': 'Nenhum resultado para “{query}”',
     'search.close': 'Fechar busca',
 
-    'site.role': 'Engenheiro de Dados Sênior',
+    'site.role': 'Engenheiro de Software Sênior',
     'site.tagline': 'Tecnologia e finanças',
     'site.title': 'Felipe.log, tecnologia e finanças',
     'site.description':
@@ -223,7 +223,7 @@ export const ui = {
       'Aberto a oportunidades em engenharia de dados e a conversar sobre qualquer assunto daqui. Respondo em até dois dias úteis.',
     'home.contactLabel': 'Contato',
     'home.whoami.lines':
-      'engenheiro de dados nas horas úteis|escrevendo sobre tecnologia, tecnologia e Finanças|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
+      'engenheiro de software nas horas úteis|escrevendo sobre tecnologia, tecnologia e Finanças|café forte, queries mais fortes ainda|sempre testando uma ideia nova',
 
     'projects.eyebrow': 'Projetos',
     'projects.title': 'O que eu construí',
